@@ -1,0 +1,4395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>KRR Quest — Natural Language & Reasoning Game</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+/* ====================================================
+   KRR Quest — High-Legibility, Balanced & Scalable Stylesheet
+   Palette: Navy Slate, Electric Blue, Cyan, Emerald Green.
+   NO YELLOW ANYWHERE.
+   ==================================================== */
+
+:root {
+  --base-font-size: 15.5px; /* Balanced standard default, fully user-scalable */
+  
+  --bg-dark: #080c14;
+  --bg-card: #111a2e;
+  --bg-card-subtle: #17233d;
+  --bg-card-hover: #1e2d4d;
+  --surface-border: #233457;
+  --surface-border-light: #334873;
+  
+  --primary: #3b82f6;
+  --primary-hover: #2563eb;
+  --primary-glow: rgba(59, 130, 246, 0.4);
+  
+  --cyan: #06b6d4;
+  --cyan-light: #38bdf8;
+  --cyan-glow: rgba(6, 182, 212, 0.35);
+  
+  --success: #10b981;
+  --success-hover: #059669;
+  --success-glow: rgba(16, 185, 129, 0.35);
+  
+  --danger: #ef4444;
+  --danger-bg: rgba(239, 68, 68, 0.2);
+  
+  --text-main: #ffffff;
+  --text-body: #e2e8f0;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+  
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+html {
+  font-size: var(--base-font-size);
+  scroll-behavior: smooth;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Custom Sleek Scrollbars (Sleek, rounded, never overlapping) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(8, 12, 20, 0.7);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb {
+  background: #2563eb;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #38bdf8;
+}
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #2563eb rgba(8, 12, 20, 0.7);
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-dark);
+  color: var(--text-body);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+#game-app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 1rem;
+}
+
+/* ====================================================
+   BUTTONS & CONTROLS
+   ==================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 0.65rem 1.3rem;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  user-select: none;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #ffffff;
+  box-shadow: 0 3px 12px var(--primary-glow);
+}
+.btn-primary:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+}
+
+.btn-emerald {
+  background: var(--success);
+  color: #ffffff;
+  box-shadow: 0 3px 12px var(--success-glow);
+}
+.btn-emerald:hover {
+  background: var(--success-hover);
+  transform: translateY(-2px);
+}
+
+.btn-outline {
+  background: var(--bg-card-subtle);
+  border: 1.5px solid var(--surface-border-light);
+  color: var(--text-main);
+}
+.btn-outline:hover:not(:disabled) {
+  border-color: var(--cyan);
+  color: var(--cyan-light);
+  background: var(--bg-card-hover);
+  transform: translateY(-2px);
+}
+.btn-outline:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.btn-full {
+  width: 100%;
+  padding: 0.9rem;
+  font-size: 1rem;
+}
+
+/* ====================================================
+   HEADER & USER ACCESSIBILITY CONTROLS
+   ==================================================== */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.4rem;
+  background: rgba(17, 26, 46, 0.95);
+  backdrop-filter: blur(14px);
+  border-bottom: 1.5px solid var(--surface-border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  gap: 1rem;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  cursor: pointer;
+}
+
+.brand-icon {
+  font-size: 1.5rem;
+  color: var(--cyan-light);
+  filter: drop-shadow(0 0 8px var(--cyan-glow));
+}
+
+.brand-titles {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-text {
+  font-weight: 800;
+  font-size: 1.2rem;
+  background: linear-gradient(135deg, #60a5fa, #38bdf8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.brand-sub {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+}
+
+.nav-tabs {
+  display: flex;
+  background: var(--bg-dark);
+  border: 1.5px solid var(--surface-border);
+  border-radius: var(--radius-full);
+  padding: 4px;
+  gap: 5px;
+}
+
+.tab-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 0.5rem 1.25rem;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.tab-btn:hover { color: var(--text-main); }
+.tab-btn.active {
+  background: var(--primary);
+  color: #fff;
+  box-shadow: 0 2px 10px var(--primary-glow);
+}
+
+.header-status {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* User Font-Size Resizer */
+.font-ctrl-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: var(--bg-dark);
+  border: 1px solid var(--surface-border);
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+}
+
+.font-lbl {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-right: 2px;
+}
+
+.font-step-btn {
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--surface-border);
+  color: var(--text-main);
+  font-size: 0.82rem;
+  font-weight: 700;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.font-step-btn:hover {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.font-reset-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0 4px;
+  transition: all 0.2s;
+}
+.font-reset-btn:hover { color: var(--cyan-light); }
+
+.font-val {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--cyan-light);
+  min-width: 42px;
+  text-align: center;
+}
+
+.score-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(6, 182, 212, 0.12);
+  border: 1.5px solid rgba(6, 182, 212, 0.35);
+  padding: 0.35rem 0.9rem;
+  border-radius: var(--radius-full);
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--cyan-light);
+}
+
+.score-lbl {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.icon-btn {
+  background: var(--bg-card-subtle);
+  border: 1.5px solid var(--surface-border);
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1rem;
+  color: var(--text-main);
+  transition: all 0.2s;
+}
+.icon-btn:hover {
+  transform: scale(1.08);
+  border-color: var(--cyan);
+}
+
+/* ====================================================
+   MAIN VIEW CONTAINER
+   ==================================================== */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem 0.25rem 2.5rem 0.25rem;
+}
+
+.view-panel {
+  display: none;
+  flex-direction: column;
+  flex: 1;
+  animation: fadeIn 0.3s ease;
+}
+
+.view-panel.active { display: flex; }
+
+/* ====================================================
+   HORIZONTAL SCROLL RIBBONS WITH ARROW BUTTONS
+   ==================================================== */
+.ribbon-with-arrows {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+  width: 100%;
+}
+
+.ribbon-flex {
+  flex: 1;
+  min-width: 0;
+}
+
+.scroll-arrow-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--bg-card-subtle);
+  border: 1.5px solid var(--surface-border);
+  color: var(--cyan-light);
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  user-select: none;
+}
+.scroll-arrow-btn:hover {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+  transform: scale(1.1);
+}
+
+/* ====================================================
+   VIEW 1: COMPLETE INTERACTIVE TABLE EXPLORER
+   ==================================================== */
+.learn-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Section Selector Card (Sections 3 to 18) */
+.section-selector-card {
+  background: var(--bg-card);
+  border: 1.5px solid var(--surface-border);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.section-selector-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.selector-title {
+  font-size: 0.88rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--cyan-light);
+  letter-spacing: 0.05em;
+}
+
+.selector-subtitle {
+  font-size: 0.82rem;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+}
+
+.section-pill-scroll {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding: 0.35rem 0.2rem 0.65rem 0.2rem;
+  scrollbar-width: thin;
+  scroll-behavior: smooth;
+  flex: 1;
+}
+
+.sec-pill-btn {
+  background: var(--bg-card-subtle);
+  border: 1.5px solid var(--surface-border);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.45rem 1rem;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.sec-pill-btn:hover {
+  border-color: var(--cyan);
+  color: var(--text-main);
+  background: var(--bg-card-hover);
+}
+
+.sec-pill-btn.active {
+  background: rgba(6, 182, 212, 0.22);
+  border-color: var(--cyan);
+  color: #ffffff;
+  box-shadow: 0 0 12px var(--cyan-glow);
+}
+
+/* Section Information Banner */
+.section-meta-banner {
+  background: linear-gradient(135deg, rgba(30, 58, 138, 0.35), rgba(15, 23, 42, 0.75));
+  border: 1.5px solid var(--surface-border-light);
+  border-radius: var(--radius-md);
+  padding: 1.1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.sec-left {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.stage-badge {
+  background: rgba(59, 130, 246, 0.25);
+  border: 1.5px solid var(--primary);
+  color: #93c5fd;
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 0.3rem 0.8rem;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.stage-heading {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.stage-sub {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  max-width: 55%;
+  text-align: right;
+  line-height: 1.45;
+}
+
+/* Table Items Bar */
+.table-items-bar {
+  background: var(--bg-card);
+  border: 1.5px solid var(--surface-border);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1.3rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.items-bar-lbl {
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--cyan-light);
+  white-space: nowrap;
+}
+
+.items-pill-scroll {
+  display: flex;
+  gap: 0.45rem;
+  overflow-x: auto;
+  padding: 0.25rem 0.2rem 0.6rem 0.2rem;
+  scrollbar-width: thin;
+  scroll-behavior: smooth;
+  flex: 1;
+}
+
+.item-pill-btn {
+  background: var(--bg-card-subtle);
+  border: 1.5px solid var(--surface-border);
+  color: var(--text-muted);
+  font-size: 0.84rem;
+  font-weight: 700;
+  padding: 0.4rem 0.95rem;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.item-pill-btn:hover {
+  border-color: var(--cyan);
+  color: var(--text-main);
+}
+
+.item-pill-btn.active {
+  background: rgba(59, 130, 246, 0.3);
+  border-color: var(--primary);
+  color: #ffffff;
+  box-shadow: 0 0 10px var(--primary-glow);
+}
+
+/* Active Concept Card */
+.animated-concept-stage {
+  background: var(--bg-card);
+  border: 1.5px solid var(--surface-border);
+  border-radius: var(--radius-lg);
+  padding: 1.8rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.35rem;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.45);
+  position: relative;
+}
+
+.concept-meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 0.85rem;
+}
+
+.concept-title-group {
+  display: flex;
+  align-items: baseline;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.concept-type-name {
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.concept-sec-tag {
+  font-size: 0.85rem;
+  font-family: var(--font-mono);
+  color: var(--cyan-light);
+  background: rgba(6, 182, 212, 0.12);
+  padding: 0.2rem 0.65rem;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+}
+
+.concept-counter {
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+/* Sentence Demo Box */
+.sentence-demo-box {
+  background: var(--bg-dark);
+  border: 1.5px solid var(--surface-border-light);
+  border-radius: var(--radius-md);
+  padding: 1.35rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.demo-tag {
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--cyan-light);
+  letter-spacing: 0.06em;
+}
+
+.sentence-hero-text {
+  font-size: 1.35rem;
+  font-weight: 600;
+  line-height: 1.65;
+  color: #ffffff;
+}
+
+.highlight-cue {
+  background: rgba(6, 182, 212, 0.25);
+  border: 1.5px solid var(--cyan);
+  color: var(--cyan-light);
+  font-family: var(--font-mono);
+  font-weight: 800;
+  padding: 0.2rem 0.65rem;
+  border-radius: var(--radius-sm);
+  display: inline-block;
+  animation: pulseGlow 2s infinite ease-in-out;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 6px var(--cyan-glow); transform: scale(1); }
+  50% { box-shadow: 0 0 16px var(--cyan-glow); transform: scale(1.03); }
+}
+
+/* Keywords Showcase Card */
+.keywords-showcase-card {
+  background: var(--bg-card-subtle);
+  border: 1.5px solid var(--surface-border);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.card-mini-label {
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--cyan-light);
+  letter-spacing: 0.06em;
+}
+
+.keywords-flex-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.kw-badge {
+  background: rgba(6, 182, 212, 0.12);
+  border: 1.5px solid rgba(6, 182, 212, 0.4);
+  color: #38bdf8;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.25rem 0.7rem;
+  border-radius: var(--radius-sm);
+}
+
+/* Meaning & KRR Action Grid */
+.detail-split-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.1rem;
+}
+
+.detail-panel {
+  background: var(--bg-card-subtle);
+  border: 1.5px solid var(--surface-border);
+  border-radius: var(--radius-md);
+  padding: 1.15rem 1.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.detail-panel.krr-action {
+  border-left: 3.5px solid var(--success);
+  background: rgba(16, 185, 129, 0.07);
+}
+
+.panel-lbl {
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.panel-txt {
+  font-size: 0.98rem;
+  line-height: 1.65;
+  color: #f1f5f9;
+}
+
+/* ====================================================
+   INTERACTIVE CONCEPT PLAYGROUND (LAB VISUALIZERS)
+   ==================================================== */
+.interactive-simulation-area {
+  width: 100%;
+  margin-top: 0.35rem;
+}
+
+.lab-container-card {
+  background: rgba(8, 12, 20, 0.75);
+  border: 1.5px solid var(--surface-border-light);
+  border-radius: var(--radius-md);
+  padding: 1.35rem 1.65rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+}
+
+.lab-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.lab-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.lab-heading {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.lab-subtitle {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+/* Logic Gate Visualizer */
+.logic-circuit-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto 1fr;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--bg-card-subtle);
+  border: 1.5px solid var(--surface-border);
+  border-radius: var(--radius-md);
+  padding: 1.1rem 1.35rem;
+}
+
+.circuit-input-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.circuit-toggle-btn {
+  background: var(--bg-dark);
+  border: 1.5px solid var(--surface-border);
+  padding: 0.55rem 0.85rem;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  transition: all 0.2s;
+}
+
+.circuit-toggle-btn.on {
+  border-color: var(--cyan);
+  color: #ffffff;
+  background: rgba(6, 182, 212, 0.15);
+}
+
+.toggle-led {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--danger);
+  margin-left: 0.5rem;
+}
+.circuit-toggle-btn.on .toggle-led {
+  background: var(--success);
+  box-shadow: 0 0 8px var(--success-glow);
+}
+
+.gate-badge-box {
+  background: rgba(59, 130, 246, 0.2);
+  border: 2px solid var(--primary);
+  color: #ffffff;
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 800;
+  padding: 0.65rem 1rem;
+  border-radius: var(--radius-md);
+  text-align: center;
+  box-shadow: 0 0 14px var(--primary-glow);
+}
+
+.circuit-output-box {
+  background: var(--bg-dark);
+  border: 1.5px solid var(--surface-border);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.circuit-output-badge {
+  font-size: 0.95rem;
+  font-weight: 800;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-full);
+}
+.circuit-output-badge.pass {
+  background: rgba(16, 185, 129, 0.2);
+  border: 1.5px solid var(--success);
+  color: #34d399;
+}
+.circuit-output-badge.fail {
+  background: rgba(239, 68, 68, 0.2);
+  border: 1.5px solid var(--danger);
+  color: #f87171;
+}
+
+.circuit-explain-card {
+  background: rgba(16, 185, 129, 0.08);
+  border-left: 3.5px solid var(--success);
+  padding: 0.75rem 1.1rem;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #f1f5f9;
+}
+
+/* Quantifier Cohort Visualizer */
+.cohort-avatars-row {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 0.75rem 0;
+}
+
+.student-avatar-chip {
+  background: var(--bg-card-subtle);
+  border: 1.5px solid var(--surface-border);
+  border-radius: var(--radius-md);
+  padding: 0.6rem 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+}
+.student-avatar-chip.active {
+  border-color: var(--success);
+  background: rgba(16, 185, 129, 0.15);
+  box-shadow: 0 0 10px var(--success-glow);
+}
+.avatar-ico { font-size: 1.25rem; }
+.avatar-name { font-size: 0.85rem; font-weight: 700; color: #fff; }
+.avatar-chk { font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono); }
+.student-avatar-chip.active .avatar-chk { color: #34d399; font-weight: 700; }
+
+/* Stage Footer Navigation */
+.stage-footer-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-top: 1.5px solid rgba(255, 255, 255, 0.08);
+  padding-top: 1.1rem;
+  margin-top: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.item-dots {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  max-width: 280px;
+  justify-content: center;
+}
+
+.item-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--surface-border);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.item-dot.active {
+  background: var(--cyan-light);
+  transform: scale(1.35);
+  box-shadow: 0 0 6px var(--cyan-glow);
+}
+
+.footer-actions-group {
+  display: flex;
+  gap: 0.65rem;
+}
+
+/* ====================================================
+   VIEW 2: THE CHALLENGE GAME (10 LEVELS)
+   ==================================================== */
+.game-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.level-ribbon {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-card);
+  border: 1.5px solid var(--surface-border);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1.4rem;
+  gap: 1rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.level-info {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.level-tag {
+  background: var(--primary);
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 0.3rem 0.75rem;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.05em;
+}
+
+.level-heading {
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: #ffffff;
+}
+
+.streak-pill {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1.5px solid var(--danger);
+  color: #fca5a5;
+  font-size: 0.78rem;
+  font-weight: 800;
+  padding: 0.2rem 0.65rem;
+  border-radius: var(--radius-full);
+  animation: pulseGlow 1.5s infinite;
+}
+.streak-pill.hidden { display: none !important; }
+
+.progress-bar-wrap {
+  flex: 1;
+  max-width: 320px;
+  height: 9px;
+  background: var(--bg-dark);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--primary), var(--cyan-light));
+  border-radius: var(--radius-full);
+  transition: width 0.4s ease;
+}
+
+.progress-ratio {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.level-quick-scroll {
+  display: flex;
+  gap: 0.45rem;
+  overflow-x: auto;
+  padding: 0.25rem 0.2rem 0.65rem 0.2rem;
+  scrollbar-width: thin;
+  scroll-behavior: smooth;
+  flex: 1;
+}
+
+.lvl-chip-btn {
+  background: var(--bg-card);
+  border: 1.5px solid var(--surface-border);
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 0.4rem 0.95rem;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.lvl-chip-btn:hover { border-color: var(--cyan); color: #fff; }
+.lvl-chip-btn.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+  box-shadow: 0 2px 8px var(--primary-glow);
+}
+
+/* Game Play Area Card */
+.game-board-card {
+  background: var(--bg-card);
+  border: 1.5px solid var(--surface-border);
+  border-radius: var(--radius-lg);
+  padding: 2rem 2.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+  min-height: 380px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.45);
+}
+
+.board-instruction {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--cyan-light);
+  text-align: center;
+}
+
+.board-play-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.6rem;
+}
+
+/* Word Token Tap Mechanic */
+.sentence-token-stream {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  justify-content: center;
+  background: var(--bg-dark);
+  border: 1.5px solid var(--surface-border-light);
+  border-radius: var(--radius-md);
+  padding: 1.6rem 1.4rem;
+  width: 100%;
+  max-width: 780px;
+}
+
+.word-token {
+  background: var(--bg-card-subtle);
+  border: 1.5px solid var(--surface-border);
+  color: #ffffff;
+  font-size: 1.15rem;
+  font-weight: 600;
+  padding: 0.55rem 1rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  user-select: none;
+}
+
+.word-token:hover {
+  transform: translateY(-2px) scale(1.04);
+  border-color: var(--cyan);
+  background: rgba(6, 182, 212, 0.18);
+}
+
+.word-token.selected-correct {
+  background: rgba(16, 185, 129, 0.25);
+  border-color: var(--success);
+  color: #34d399;
+  box-shadow: 0 0 15px var(--success-glow);
+  transform: scale(1.06);
+}
+
+.word-token.shake-wrong {
+  animation: shake 0.4s ease;
+  background: var(--danger-bg);
+  border-color: var(--danger);
+}
+
+/* Stamp Scanner Mechanic */
+.claim-card-inspect {
+  background: var(--bg-dark);
+  border: 1.5px solid var(--surface-border-light);
+  border-radius: var(--radius-md);
+  padding: 1.6rem 2rem;
+  max-width: 780px;
+  width: 100%;
+  text-align: center;
+}
+
+.claim-quote {
+  font-size: 1.35rem;
+  line-height: 1.65;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.stamp-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.95rem;
+  width: 100%;
+  max-width: 780px;
+}
+
+.stamp-btn {
+  background: var(--bg-card-subtle);
+  border: 1.5px solid var(--surface-border);
+  color: #ffffff;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0.95rem 1.4rem;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.stamp-btn:hover {
+  border-color: var(--cyan);
+  background: var(--bg-card-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--cyan-glow);
+}
+
+/* Bottom Bar */
+.game-bottom-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.85rem;
+  gap: 1rem;
+  min-height: 50px;
+}
+
+.live-feedback {
+  flex: 1;
+  text-align: center;
+  font-weight: 800;
+  font-size: 1.05rem;
+  animation: fadeIn 0.3s ease;
+}
+
+.live-feedback.success { color: #34d399; }
+.live-feedback.error { color: #f87171; }
+.live-feedback.hint { color: var(--cyan-light); }
+
+/* Celebration Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 12, 20, 0.92);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-overlay.hidden { display: none !important; }
+
+.celebration-card {
+  background: var(--bg-card);
+  border: 1.5px solid var(--surface-border);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem 2rem;
+  text-align: center;
+  max-width: 460px;
+  width: 90%;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
+  animation: scaleUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.trophy-emoji {
+  font-size: 3.5rem;
+  animation: bounce 2s infinite;
+}
+
+.celeb-score-badge {
+  background: rgba(16, 185, 129, 0.18);
+  border: 1.5px solid var(--success);
+  color: #34d399;
+  font-size: 1.15rem;
+  font-weight: 800;
+  padding: 0.35rem 1.1rem;
+  border-radius: var(--radius-full);
+}
+
+.celeb-stats {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  margin: 0.6rem 0;
+}
+
+.c-stat { display: flex; flex-direction: column; }
+.c-val { font-size: 1.7rem; font-weight: 800; color: var(--cyan-light); }
+.c-lbl { font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; }
+
+.celeb-btn-group {
+  width: 100%;
+  margin-top: 0.6rem;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleUp {
+  from { opacity: 0; transform: scale(0.85); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Responsive Queries */
+@media (max-width: 850px) {
+  .app-header { flex-direction: column; gap: 0.75rem; padding: 0.85rem; }
+  .section-meta-banner { flex-direction: column; align-items: flex-start; gap: 0.65rem; }
+  .stage-sub { max-width: 100%; text-align: left; }
+  .detail-split-grid { grid-template-columns: 1fr; }
+  .logic-circuit-grid { grid-template-columns: 1fr; gap: 0.65rem; }
+  .concept-meta-row { flex-direction: column; align-items: flex-start; gap: 0.45rem; }
+  .stage-footer-nav { flex-direction: column; gap: 0.85rem; align-items: stretch; }
+  .footer-actions-group { justify-content: space-between; }
+  .item-dots { order: 3; }
+  .stamp-actions-grid { grid-template-columns: 1fr; }
+  .level-ribbon { flex-wrap: wrap; }
+  .progress-bar-wrap { width: 100%; order: 3; }
+}
+
+</style>
+</head>
+<body>
+  <div id="game-app">
+
+    <!-- Top Navigation Bar -->
+    <header class="app-header">
+      <div class="brand" id="brandBtn">
+        <span class="brand-icon">⚡</span>
+        <div class="brand-titles">
+          <span class="brand-text">KRR Quest</span>
+          <span class="brand-sub">Sections 3–18 Complete Interactive Study</span>
+        </div>
+      </div>
+
+      <nav class="nav-tabs">
+        <button id="tabLearnBtn" class="tab-btn active">
+          <span>🎬 1. Learn All Section Tables (Animated)</span>
+        </button>
+        <button id="tabGameBtn" class="tab-btn">
+          <span>🎮 2. Play Practice Game (10 Levels)</span>
+        </button>
+      </nav>
+
+      <div class="header-status">
+        <div class="font-ctrl-pill" title="Adjust text size to your preference">
+          <span class="font-lbl">Text:</span>
+          <button id="fontDecBtn" class="font-step-btn" title="Make text smaller">A−</button>
+          <span id="fontSizeDisplay" class="font-val">100%</span>
+          <button id="fontIncBtn" class="font-step-btn" title="Make text larger">A+</button>
+          <button id="fontResetBtn" class="font-reset-btn" title="Reset default font size">↺</button>
+        </div>
+
+        <div class="score-pill">
+          <span class="score-icon">💎</span>
+          <span id="scoreVal">0</span>
+          <span class="score-lbl">pts</span>
+        </div>
+        <button id="soundToggleBtn" class="icon-btn" title="Toggle Sound">🔊</button>
+      </div>
+    </header>
+
+    <!-- MAIN VIEW CONTAINER -->
+    <main class="main-content">
+
+      <!-- ================= VIEW 1: COMPLETE INTERACTIVE TABLE EXPLORER ================= -->
+      <section id="learnView" class="view-panel active">
+        <div class="learn-container">
+          
+          <!-- Section Selector Ribbon (Sections 3 to 18) -->
+          <div class="section-selector-card">
+            <div class="section-selector-header">
+              <span class="selector-title">Select PDF Section:</span>
+              <span class="selector-subtitle" id="secTableCount">13 Tables &bull; 113 Total Concepts</span>
+            </div>
+            <div class="ribbon-with-arrows">
+              <button id="secScrollLeftBtn" class="scroll-arrow-btn" aria-label="Scroll sections left" title="Scroll left">‹</button>
+              <div class="section-pill-scroll" id="sectionPillList">
+                <!-- Dynamically populated section pills (Sections 3 to 18) -->
+              </div>
+              <button id="secScrollRightBtn" class="scroll-arrow-btn" aria-label="Scroll sections right" title="Scroll right">›</button>
+            </div>
+          </div>
+
+          <!-- Section Information Banner -->
+          <div class="section-meta-banner">
+            <div class="sec-left">
+              <span class="stage-badge" id="secBadge">Section 3</span>
+              <h2 id="secTitle" class="stage-heading">Knowledge Representations</h2>
+            </div>
+            <p id="secDescription" class="stage-sub">Facts, entities, properties, relations, states, actions and events.</p>
+          </div>
+
+          <!-- Table Items Ribbon (All individual rows of that section's table) -->
+          <div class="table-items-bar">
+            <span class="items-bar-lbl">Table Rows:</span>
+            <div class="ribbon-with-arrows ribbon-flex">
+              <button id="rowScrollLeftBtn" class="scroll-arrow-btn" aria-label="Scroll rows left" title="Scroll left">‹</button>
+              <div class="items-pill-scroll" id="tableItemPills">
+                <!-- Dynamically populated row pills (e.g. Fact, Statement, Entity, Property...) -->
+              </div>
+              <button id="rowScrollRightBtn" class="scroll-arrow-btn" aria-label="Scroll rows right" title="Scroll right">›</button>
+            </div>
+          </div>
+
+          <!-- Active Animated Concept Card -->
+          <div class="animated-concept-stage">
+            
+            <!-- Card Header Meta -->
+            <div class="concept-meta-row">
+              <div class="concept-title-group">
+                <span class="concept-type-name" id="conceptTypeName">Property / Attribute</span>
+                <span class="concept-sec-tag" id="conceptSecTag">Section 3 &bull; Row 4</span>
+              </div>
+              <span class="concept-counter" id="conceptCounter">4 / 12 in this table</span>
+            </div>
+
+            <!-- Animated Sentence Demonstration -->
+            <div class="sentence-demo-box">
+              <div class="demo-tag">Authentic PDF Example:</div>
+              <div class="sentence-hero-text" id="sentenceHeroText">
+                "The application <span class="highlight-cue">contains</span> two documents."
+              </div>
+            </div>
+
+            <!-- Common Words / Keywords Grid -->
+            <div class="keywords-showcase-card">
+              <div class="card-mini-label">Common Words / Expressions in PDF:</div>
+              <div class="keywords-flex-wrap" id="conceptKeywordsList">
+                <!-- Dynamically populated keyword badges -->
+              </div>
+            </div>
+
+            <!-- Meaning & KRR System Action -->
+            <div class="detail-split-grid">
+              <div class="detail-panel">
+                <div class="panel-lbl">💡 Official Meaning:</div>
+                <div class="panel-txt" id="conceptMeaningText">A characteristic of an entity.</div>
+              </div>
+              <div class="detail-panel krr-action">
+                <div class="panel-lbl">🛠️ Practical Use in KRR System:</div>
+                <div class="panel-txt" id="conceptKrrActionText">Store completeness, contact details, and document count as attributes of the relevant entity.</div>
+              </div>
+            </div>
+
+            <!-- Interactive Simulation Widget -->
+            <div class="interactive-simulation-area" id="conceptSimArea">
+              <!-- Dynamically injected interactive widget -->
+            </div>
+
+            <!-- Navigation Controls -->
+            <div class="stage-footer-nav">
+              <button id="prevConceptBtn" class="btn btn-outline">← Previous Concept</button>
+              <div class="item-dots" id="conceptItemDots"></div>
+              <div class="footer-actions-group">
+                <button id="nextConceptBtn" class="btn btn-primary">Next Concept →</button>
+                <button id="practiceThisSecBtn" class="btn btn-emerald">Practice This Section 🎮</button>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ================= VIEW 2: THE 10-LEVEL CHALLENGE GAME ================= -->
+      <section id="gameView" class="view-panel">
+        <div class="game-container">
+
+          <!-- Level Header Ribbon -->
+          <div class="level-ribbon">
+            <div class="level-info">
+              <span id="lvlBadge" class="level-tag">Level 1</span>
+              <span id="lvlTitle" class="level-heading">Section 3: The Building Blocks</span>
+              <span id="streakBadge" class="streak-pill hidden">🔥 0 Streak</span>
+            </div>
+            <div class="progress-bar-wrap">
+              <div id="progressBar" class="progress-fill"></div>
+            </div>
+            <span id="progressRatio" class="progress-ratio">1 / 8</span>
+          </div>
+
+          <!-- Quick Jump Level Selector -->
+          <div class="ribbon-with-arrows">
+            <button id="lvlScrollLeftBtn" class="scroll-arrow-btn" aria-label="Scroll levels left" title="Scroll left">‹</button>
+            <div class="level-quick-scroll" id="levelQuickBar">
+              <!-- 10 Level Buttons dynamically populated -->
+            </div>
+            <button id="lvlScrollRightBtn" class="scroll-arrow-btn" aria-label="Scroll levels right" title="Scroll right">›</button>
+          </div>
+
+          <!-- Game Card Play Area -->
+          <div class="game-board-card">
+            <div id="gameHeaderDesc" class="board-instruction">Tap the cue word that defines the rule!</div>
+            <div id="gameStage" class="board-play-area">
+              <!-- Dynamic game mechanic (Word tokens, forensic stamps, logic connectors) -->
+            </div>
+          </div>
+
+          <!-- Bottom Action Bar -->
+          <div class="game-bottom-bar">
+            <button id="hintBtn" class="btn btn-outline hint-btn">
+              <span>💡 Hint</span>
+            </button>
+            <div id="liveFeedback" class="live-feedback"></div>
+            <button id="reviewLessonBtn" class="btn btn-outline">
+              <span>📖 Review Table</span>
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ================= CELEBRATION MODAL ================= -->
+      <div id="celebrationModal" class="modal-overlay hidden">
+        <div class="celebration-card">
+          <div class="trophy-emoji">🏆</div>
+          <h2 id="celebTitle">Level Cleared!</h2>
+          <div class="celeb-score-badge" id="celebScoreText">+160 Points</div>
+          <p id="celebSummary">Great job! You mastered this section's keywords.</p>
+          <div class="celeb-stats">
+            <div class="c-stat"><span class="c-val" id="celebPts">160</span><span class="c-lbl">Score</span></div>
+            <div class="c-stat"><span class="c-val" id="celebAcc">100%</span><span class="c-lbl">Accuracy</span></div>
+          </div>
+          <div class="celeb-btn-group">
+            <button id="nextLevelActionBtn" class="btn btn-primary btn-full">Next Level ➔</button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+/* ====================================================
+   krr-database.js — Comprehensive Knowledge Database
+   Strictly derived from the provided PDF:
+   - All Sections 1–18
+   - 110+ KRR Concepts with exact keywords & practical cases
+   - All 20 Benchmark Cases from Section 16
+   - 5-Step Method & Section 18 Conceptual Families
+   ==================================================== */
+
+const KRR_DATABASE = {
+  // ── SECTIONS 3–15: CATEGORIZED REFERENCE ──
+  categories: [
+    {
+      id: "sec3",
+      num: 3,
+      name: "Knowledge Representations",
+      icon: "🏛️",
+      desc: "Facts, entities, properties, relations, states, actions and events",
+      concepts: [
+        {
+          type: "Fact",
+          keywords: ["is", "has", "submitted", "paid"],
+          meaning: "Information accepted as true in the knowledge base.",
+          example: "Ali submitted his application. / Ali paid the admission fee.",
+          krrUse: "Record an established submission or payment as a fact in the knowledge base."
+        },
+        {
+          type: "Statement / Proposition",
+          keywords: ["complete factual statement"],
+          meaning: "A declarative sentence whose truth can be assessed as true or false.",
+          example: "Ali scored 78 marks in the admission test.",
+          krrUse: "Check whether a sentence can be evaluated as true or false before storing it as a proposition."
+        },
+        {
+          type: "Entity",
+          keywords: ["applicant", "application", "program", "department"],
+          meaning: "A person, object, organization, or identifiable item.",
+          example: "Ali is an applicant. / BS Computer Science is a program.",
+          krrUse: "Create identifiable records for applicants, applications, programs and departments."
+        },
+        {
+          type: "Property / Attribute",
+          keywords: ["is", "has", "possesses", "contains"],
+          meaning: "A characteristic of an entity.",
+          example: "Ali's application is complete. / The application contains two documents.",
+          krrUse: "Store completeness, contact details and document count as attributes of the relevant entity."
+        },
+        {
+          type: "Relationship",
+          keywords: ["applied to", "belongs to", "submitted by"],
+          meaning: "A connection between two or more entities.",
+          example: "Ali applied to the BS Computer Science program. / The application belongs to Ali.",
+          krrUse: "Link an applicant to a program, an application to its owner, and a document to its submitter."
+        },
+        {
+          type: "Classification",
+          keywords: ["is a", "belongs to", "classified as"],
+          meaning: "Assignment of an entity to a category.",
+          example: "Ali is an undergraduate applicant. / The record is classified as incomplete.",
+          krrUse: "Assign an applicant or application to a defined category for routing or reporting."
+        },
+        {
+          type: "Existence",
+          keywords: ["exists", "there is", "is available"],
+          meaning: "Whether something exists or is available.",
+          example: "An application record exists for Ali. / A seat is available in the program.",
+          krrUse: "Determine whether a record, receipt or seat is present before acting on it."
+        },
+        {
+          type: "Identity",
+          keywords: ["is the same as", "refers to"],
+          meaning: "Whether two references identify the same entity.",
+          example: "The application number identifies Ali's application record.",
+          krrUse: "Resolve duplicate or differently named references to one application record."
+        },
+        {
+          type: "Quantity",
+          keywords: ["has", "contains", "totals", "costs"],
+          meaning: "A count or measurable amount.",
+          example: "Ali has two supporting documents. / The fee totals 5,000 rupees.",
+          krrUse: "Use recorded counts and amounts for validation, fees and reporting."
+        },
+        {
+          type: "State / Status",
+          keywords: ["pending", "approved", "rejected", "verified"],
+          meaning: "The current condition of an entity.",
+          example: "Ali's application is pending. / The certificate is verified.",
+          krrUse: "Track an application's current workflow state and update it after authorized checks."
+        },
+        {
+          type: "Action",
+          keywords: ["submits", "reviews", "approves", "verifies"],
+          meaning: "Something an agent performs.",
+          example: "The officer reviews the application. / The officer verifies the certificate.",
+          krrUse: "Represent actions performed by applicants, officers or committees."
+        },
+        {
+          type: "Event",
+          keywords: ["occurred", "happened", "was submitted"],
+          meaning: "Something that happens, often at a particular time.",
+          example: "The application event occurred on 10 October. / The payment happened on 10 October.",
+          krrUse: "Keep an event record with its date/time for audit trails and process reconstruction."
+        }
+      ]
+    },
+    {
+      id: "sec4",
+      num: 4,
+      name: "Logical Connectives",
+      icon: "⚡",
+      desc: "AND, OR, NOT, conditionals, biconditionals, and exclusions",
+      concepts: [
+        {
+          type: "Conjunction",
+          keywords: ["and", "both…and", "as well as"],
+          meaning: "Two or more statements or requirements apply together.",
+          example: "Both the score requirement and document requirement must be met.",
+          krrUse: "Require every listed condition when a policy joins requirements with AND."
+        },
+        {
+          type: "Disjunction",
+          keywords: ["or", "either…or", "alternatively"],
+          meaning: "Presents alternatives; one or both may be permitted, depending on context.",
+          example: "The applicant may submit a national identity card or another approved document.",
+          krrUse: "Accept one or more permitted document alternatives only as the policy defines; do not assume OR is exclusive."
+        },
+        {
+          type: "Negation",
+          keywords: ["not", "no", "never", "does not", "cannot"],
+          meaning: "Denies a statement or condition.",
+          example: "Ali has not submitted the required certificate. / No payment has been recorded.",
+          krrUse: "Represent a negative claim explicitly; distinguish 'not submitted' from missing system data."
+        },
+        {
+          type: "Conditional",
+          keywords: ["if", "whenever", "in the event that"],
+          meaning: "Expresses a relationship between a condition and an outcome.",
+          example: "If the documents are complete, the application can proceed to verification.",
+          krrUse: "Trigger an outcome only when the stated condition is satisfied."
+        },
+        {
+          type: "Two-way condition",
+          keywords: ["if and only if", "exactly when"],
+          meaning: "States that each condition holds precisely when the other does; both directions apply.",
+          example: "An application is marked complete if and only if all mandatory requirements are satisfied.",
+          krrUse: "Use a biconditional only when policy supports both directions, not merely one-way implication."
+        },
+        {
+          type: "Exclusive alternative",
+          keywords: ["either…or but not both", "one or the other"],
+          meaning: "Exactly one alternative is allowed or selected.",
+          example: "The applicant may choose either morning or evening assessment, but not both.",
+          krrUse: "Enforce a one-choice rule where the policy expressly excludes selecting both."
+        },
+        {
+          type: "Joint negation",
+          keywords: ["neither…nor"],
+          meaning: "Denies both statements.",
+          example: "The applicant submitted neither the certificate nor an approved alternative.",
+          krrUse: "Flag the case when both required alternative submissions are absent."
+        },
+        {
+          type: "Exclusion of a combination",
+          keywords: ["not both", "cannot have both"],
+          meaning: "States that two conditions cannot hold together; at least one must not hold.",
+          example: "The applicant cannot accept two mutually exclusive offers under the admission policy.",
+          krrUse: "Prevent a prohibited combination while allowing either individual option where policy permits."
+        }
+      ]
+    },
+    {
+      id: "sec5",
+      num: 5,
+      name: "Conditions & Requirements",
+      icon: "⚖️",
+      desc: "Necessary, sufficient, exceptions, prerequisites and dependencies",
+      concepts: [
+        {
+          type: "Necessary condition",
+          keywords: ["only if", "requires", "must have", "is necessary for"],
+          meaning: "A condition that must hold for an outcome to be possible; by itself it may not be enough.",
+          example: "Registration proceeds only if the fee is paid.",
+          krrUse: "Check a mandatory prerequisite, while separately checking all other eligibility conditions."
+        },
+        {
+          type: "Sufficient condition",
+          keywords: ["is enough to", "is sufficient for", "guarantees under the rules"],
+          meaning: "A condition sufficient to establish a specified outcome.",
+          example: "Meeting all published eligibility criteria is sufficient to pass the eligibility check.",
+          krrUse: "Grant the specified outcome when the complete sufficient condition is met; avoid treating partial as sufficient."
+        },
+        {
+          type: "Exception or condition",
+          keywords: ["unless", "except if", "except when"],
+          meaning: "Describes when a rule may not apply or when an alternative outcome occurs.",
+          example: "Unless the fee is paid by the deadline, the application may be cancelled.",
+          krrUse: "Apply the exception branch only when the stated exception condition is met."
+        },
+        {
+          type: "Alternative outcome",
+          keywords: ["otherwise", "if not", "failing that"],
+          meaning: "Describes what may happen when a condition is not met.",
+          example: "Submit the missing document by the deadline; otherwise, the application may be cancelled.",
+          krrUse: "Define the fallback path when the primary requirement or action is not completed."
+        },
+        {
+          type: "Prerequisite",
+          keywords: ["before", "must first", "requires prior completion"],
+          meaning: "A step must be completed before another step.",
+          example: "The fee must first be paid before registration is finalized.",
+          krrUse: "Enforce workflow order so later steps cannot begin prematurely."
+        },
+        {
+          type: "Dependency",
+          keywords: ["depends on", "subject to", "conditional upon"],
+          meaning: "An outcome depends on another condition or decision.",
+          example: "Final admission depends on meeting all applicable eligibility requirements.",
+          krrUse: "Keep a decision pending until its dependent condition or approval is resolved."
+        }
+      ]
+    },
+    {
+      id: "sec6",
+      num: 6,
+      name: "Quantifiers & Quantities",
+      icon: "🔢",
+      desc: "All, some, none, min, max, exact, majority and proportions",
+      concepts: [
+        {
+          type: "Universal",
+          keywords: ["all", "every", "each"],
+          meaning: "Applies to every individual in the specified group.",
+          example: "All applicants must provide valid identification.",
+          krrUse: "Apply a rule to every member of the defined applicant group."
+        },
+        {
+          type: "Existential",
+          keywords: ["some", "at least one", "there is"],
+          meaning: "At least one individual has the stated property.",
+          example: "Some applicants have incomplete documents.",
+          krrUse: "Search for at least one matching record; do not infer that all records match."
+        },
+        {
+          type: "No-existence",
+          keywords: ["none", "no applicant", "not any"],
+          meaning: "No member of the specified group has the property.",
+          example: "None of the applicants has completed verification yet.",
+          krrUse: "Return an empty-match conclusion only after checking the complete specified group."
+        },
+        {
+          type: "Minimum quantity",
+          keywords: ["at least", "no fewer than"],
+          meaning: "The quantity cannot be below the stated minimum.",
+          example: "Applicants must submit at least two supporting documents.",
+          krrUse: "Reject or flag counts below the minimum threshold."
+        },
+        {
+          type: "Maximum quantity",
+          keywords: ["at most", "no more than"],
+          meaning: "The quantity cannot exceed the stated maximum.",
+          example: "An applicant may select at most two preferred programs.",
+          krrUse: "Prevent selections above the permitted cap."
+        },
+        {
+          type: "Exact quantity",
+          keywords: ["exactly", "precisely"],
+          meaning: "The quantity must match the stated number.",
+          example: "An applicant must select exactly one admission category.",
+          krrUse: "Validate equality to the required count, not merely a minimum or maximum."
+        },
+        {
+          type: "Majority",
+          keywords: ["most", "the majority"],
+          meaning: "More than half when 'most' is used in its strict numerical sense.",
+          example: "Most applicants completed verification on time.",
+          krrUse: "Use a numerical threshold greater than 50% when a strict majority is intended."
+        },
+        {
+          type: "Minority or small quantity",
+          keywords: ["few", "a small number"],
+          meaning: "Indicates a relatively small number, often without a precise threshold.",
+          example: "Few applicants requested corrections.",
+          krrUse: "Treat as qualitative unless the system defines a numerical threshold."
+        },
+        {
+          type: "Proportion",
+          keywords: ["half", "80 percent", "one in five"],
+          meaning: "Describes a fraction of the group.",
+          example: "Eighty percent of applications have been verified.",
+          krrUse: "Calculate and report the specified share using a clearly defined denominator."
+        }
+      ]
+    },
+    {
+      id: "sec7",
+      num: 7,
+      name: "Comparisons & Rankings",
+      icon: "📊",
+      desc: "Greater, lower, matches, thresholds, rankings and preferences",
+      concepts: [
+        {
+          type: "Greater value",
+          keywords: ["greater than", "exceeds", "higher than"],
+          meaning: "Indicates that one value is larger than another.",
+          example: "Ali's test score is higher than Ahmed's.",
+          krrUse: "Compare recorded scores or amounts using a strict greater-than test."
+        },
+        {
+          type: "Lower value",
+          keywords: ["less than", "below", "lower than"],
+          meaning: "Indicates that one value is smaller than another.",
+          example: "Ahmed's score is below the required threshold.",
+          krrUse: "Identify values below a required benchmark."
+        },
+        {
+          type: "Equality",
+          keywords: ["equal to", "matches", "the same as"],
+          meaning: "Indicates that two values or records are equal or correspond.",
+          example: "The recorded score matches the verified test result.",
+          krrUse: "Check that a stored value matches an authoritative value."
+        },
+        {
+          type: "Inequality",
+          keywords: ["different from", "does not match"],
+          meaning: "Indicates that two values or records are not equal or do not correspond.",
+          example: "The certificate name does not match the application record.",
+          krrUse: "Flag mismatches for review rather than silently treating records as identical."
+        },
+        {
+          type: "Minimum threshold",
+          keywords: ["at least", "minimum of", "no less than"],
+          meaning: "Sets a lower bound that may be met or exceeded.",
+          example: "Applicants must score at least 60 marks.",
+          krrUse: "Check whether the score is greater than or equal to the required threshold."
+        },
+        {
+          type: "Maximum threshold",
+          keywords: ["at most", "maximum of", "no more than"],
+          meaning: "Sets an upper bound that must not be exceeded.",
+          example: "The permitted number of program choices is at most two.",
+          krrUse: "Check whether the count is less than or equal to the allowed cap."
+        },
+        {
+          type: "Ranking",
+          keywords: ["highest", "lowest", "first", "top-ranked"],
+          meaning: "Places an item in an ordered position relative to others.",
+          example: "Ali has the highest score among the listed applicants.",
+          krrUse: "Sort or rank applicants by the selected measure and comparison group."
+        },
+        {
+          type: "Preference",
+          keywords: ["prefer", "rather than", "instead of"],
+          meaning: "Expresses a choice or favored alternative.",
+          example: "Ali prefers BS Computer Science rather than BS Artificial Intelligence.",
+          krrUse: "Record preference separately from eligibility or guaranteed allocation."
+        },
+        {
+          type: "Order",
+          keywords: ["before", "after", "earlier than", "later than"],
+          meaning: "Indicates relative order, often in time.",
+          example: "Document verification occurs after application submission.",
+          krrUse: "Compare timestamps or process sequence; order alone does not prove causation."
+        }
+      ]
+    },
+    {
+      id: "sec8",
+      num: 8,
+      name: "Temporal & Sequence",
+      icon: "⏳",
+      desc: "Time points, sequences, durations, deadlines, and state changes",
+      concepts: [
+        {
+          type: "Time point",
+          keywords: ["on", "at", "during"],
+          meaning: "Locates an event at a date, time, or period.",
+          example: "Ali submitted the application on 10 October.",
+          krrUse: "Attach date/time or period metadata to an event."
+        },
+        {
+          type: "Before",
+          keywords: ["before", "earlier than", "prior to"],
+          meaning: "Places an event or deadline earlier than another reference point.",
+          example: "The fee must be paid before the deadline.",
+          krrUse: "Check that a timestamp precedes the required event or deadline."
+        },
+        {
+          type: "After",
+          keywords: ["after", "following", "subsequently"],
+          meaning: "Places an event later than another event or time.",
+          example: "The merit list is published after evaluation.",
+          krrUse: "Enforce or describe event order without assuming causation."
+        },
+        {
+          type: "Simultaneous activity",
+          keywords: ["while", "during", "at the same time"],
+          meaning: "Indicates that activities overlap in time.",
+          example: "The officer checked the documents while reviewing the application.",
+          krrUse: "Represent overlapping tasks or concurrent events."
+        },
+        {
+          type: "Sequence",
+          keywords: ["first", "then", "next", "finally"],
+          meaning: "Specifies ordered procedural steps.",
+          example: "First, submit the application; then, verify the documents.",
+          krrUse: "Convert ordered instructions into workflow steps."
+        },
+        {
+          type: "Duration",
+          keywords: ["for", "throughout", "lasting"],
+          meaning: "States how long a condition or event continues.",
+          example: "The application remained pending for five days.",
+          krrUse: "Calculate elapsed time or monitor how long a status persists."
+        },
+        {
+          type: "Start or end",
+          keywords: ["begins", "starts", "ends", "expires"],
+          meaning: "Identifies the beginning or termination of a period or validity.",
+          example: "The application period begins on 1 October. / The offer expires on 15 November.",
+          krrUse: "Open or close a process when its defined start/end time is reached."
+        },
+        {
+          type: "Until",
+          keywords: ["until", "up to the time when"],
+          meaning: "States that a condition continues up to a specified event or time.",
+          example: "The application remains pending until verification is completed.",
+          krrUse: "Maintain a state until a specified terminating condition occurs."
+        },
+        {
+          type: "Recurrence",
+          keywords: ["daily", "weekly", "every year"],
+          meaning: "Indicates a repeated event or schedule.",
+          example: "The system generates a daily report of pending applications.",
+          krrUse: "Schedule repeated jobs or recurring policy cycles."
+        },
+        {
+          type: "Deadline",
+          keywords: ["by", "no later than", "before the deadline"],
+          meaning: "Sets the latest permitted time for an action.",
+          example: "The applicant must submit the missing document by 30 October.",
+          krrUse: "Validate completion against the cutoff time; distinguish 'by' from earlier-than."
+        },
+        {
+          type: "Immediate sequence",
+          keywords: ["as soon as", "once"],
+          meaning: "Signals that an action follows immediately or upon completion of a condition.",
+          example: "As soon as payment is confirmed, the receipt is issued.",
+          krrUse: "Trigger the next action when the specified event is confirmed."
+        },
+        {
+          type: "Change of state",
+          keywords: ["becomes", "changes from…to", "remains"],
+          meaning: "Describes a transition or persistence of an entity's state.",
+          example: "The status changes from pending to approved.",
+          krrUse: "Record state transitions with their triggering conditions and times."
+        }
+      ]
+    },
+    {
+      id: "sec9",
+      num: 9,
+      name: "Causal, Explanatory & Evidence",
+      icon: "🔍",
+      desc: "Causes, reasons, evidence, inferences, premises, and conclusions",
+      concepts: [
+        {
+          type: "Cause",
+          keywords: ["causes", "leads to", "results in"],
+          meaning: "Describes a causal relationship.",
+          example: "A server outage causes a delay in application submission.",
+          krrUse: "Represent a causal claim only when supported; distinguish it from mere sequence or correlation."
+        },
+        {
+          type: "Reason",
+          keywords: ["because", "since", "due to"],
+          meaning: "Gives a reason or explanation.",
+          example: "The application is delayed because a required document is missing.",
+          krrUse: "Capture the stated explanation and separately assess whether it is verified."
+        },
+        {
+          type: "Evidence",
+          keywords: ["evidence shows", "the record indicates", "according to"],
+          meaning: "Supports a claim.",
+          example: "The payment receipt provides evidence that Ali paid the fee.",
+          krrUse: "Attach the supporting record and its source to a claim."
+        },
+        {
+          type: "Tentative inference",
+          keywords: ["suggests", "indicates", "points to"],
+          meaning: "Draws a provisional conclusion from observations.",
+          example: "The mismatch indicates a possible data-entry error.",
+          krrUse: "Mark conclusions as provisional until additional checks confirm them."
+        },
+        {
+          type: "Possible explanation",
+          keywords: ["may be due to", "could be explained by", "possibly because"],
+          meaning: "Proposes a plausible explanation without asserting certainty.",
+          example: "The delayed verification may be due to incomplete documentation.",
+          krrUse: "Keep candidate explanations separate from established causes."
+        },
+        {
+          type: "Prediction",
+          keywords: ["likely", "probably", "expected to"],
+          meaning: "Estimates a possible future outcome.",
+          example: "The applicant will probably complete verification tomorrow.",
+          krrUse: "Use forecasts as estimates, not confirmed future facts."
+        },
+        {
+          type: "Generalization",
+          keywords: ["usually", "generally", "most often"],
+          meaning: "Describes a recurring or typical pattern.",
+          example: "Applications with complete documents usually require fewer correction requests.",
+          krrUse: "Use patterns as defeasible expectations, not rules that have no exceptions."
+        },
+        {
+          type: "Conclusion",
+          keywords: ["therefore", "hence", "consequently", "thus"],
+          meaning: "Signals a conclusion drawn from preceding information.",
+          example: "The fee is unpaid; hence, registration is incomplete.",
+          krrUse: "Check that premises actually support conclusion; marker alone does not make inference valid."
+        },
+        {
+          type: "Supporting premise",
+          keywords: ["given that", "considering that", "based on"],
+          meaning: "Introduces information offered in support of a conclusion.",
+          example: "Given that Ali meets the score threshold, he satisfies the score requirement.",
+          krrUse: "Identify the premise and verify its source before using it in a decision."
+        },
+        {
+          type: "Contrast",
+          keywords: ["however", "although", "even though", "nevertheless"],
+          meaning: "Highlights a contrast or qualification between claims.",
+          example: "Although Ali meets the score threshold, his documents are incomplete.",
+          krrUse: "Preserve both sides of a contrast; do not discard the qualification."
+        }
+      ]
+    },
+    {
+      id: "sec10",
+      num: 10,
+      name: "Uncertainty & Assumptions",
+      icon: "❓",
+      desc: "Certainty, probability, possibility, assumptions, and missing info",
+      concepts: [
+        {
+          type: "Certainty",
+          keywords: ["certainly", "definitely", "confirmed"],
+          meaning: "Presents a claim as certain or confirmed.",
+          example: "The official payment record confirms that the fee was received.",
+          krrUse: "Use only when the evidence or source justifies a confirmed status."
+        },
+        {
+          type: "Possibility",
+          keywords: ["may", "might", "could", "possibly"],
+          meaning: "Indicates that something is possible but not established.",
+          example: "The application may be delayed because of a server issue.",
+          krrUse: "Keep possible outcomes open rather than converting them into facts."
+        },
+        {
+          type: "Probability",
+          keywords: ["probably", "likely", "unlikely"],
+          meaning: "Expresses an estimated likelihood.",
+          example: "The application is likely to pass the initial check.",
+          krrUse: "Represent likelihood as an estimate; use calibrated probabilities if needed."
+        },
+        {
+          type: "Uncertainty",
+          keywords: ["uncertain", "unclear", "not yet known"],
+          meaning: "States that the truth or status has not been established.",
+          example: "The certificate's authenticity is uncertain.",
+          krrUse: "Keep the claim unresolved pending further information."
+        },
+        {
+          type: "Confidence",
+          keywords: ["high confidence", "low confidence"],
+          meaning: "Indicates the system's degree of confidence in a claim.",
+          example: "The system has high confidence in the clearly printed application number.",
+          krrUse: "Store confidence separately from the claim itself and explain its basis."
+        },
+        {
+          type: "Assumption",
+          keywords: ["assume", "suppose", "presuming"],
+          meaning: "Treats a proposition as a temporary premise for reasoning.",
+          example: "Assuming the test score is correct, the applicant meets the score threshold.",
+          krrUse: "Make assumptions explicit and do not store them as verified facts."
+        },
+        {
+          type: "Appearance / Indication",
+          keywords: ["appears to", "seems to", "apparently"],
+          meaning: "Describes how something looks based on available observations.",
+          example: "The application appears incomplete because a required document is missing.",
+          krrUse: "Flag an observation for review without treating appearance as confirmation."
+        },
+        {
+          type: "Missing information",
+          keywords: ["unknown", "unavailable", "not recorded"],
+          meaning: "Indicates that information is absent from available knowledge or record.",
+          example: "The payment status is not recorded in the system.",
+          krrUse: "Represent missing data explicitly; absence of record does not establish negative claim."
+        }
+      ]
+    },
+    {
+      id: "sec11",
+      num: 11,
+      name: "Rules & Deontic Modalities",
+      icon: "📋",
+      desc: "Obligations, permissions, prohibitions, advice, and policies",
+      concepts: [
+        {
+          type: "Obligation",
+          keywords: ["must", "has to", "is required to"],
+          meaning: "Expresses a duty or mandatory action.",
+          example: "Applicants must submit the required documents.",
+          krrUse: "Create a mandatory workflow or compliance check."
+        },
+        {
+          type: "Permission",
+          keywords: ["may", "is allowed to", "can"],
+          meaning: "Expresses an allowed action; 'may' and 'can' can also signal possibility in other contexts.",
+          example: "An eligible applicant may apply for an available program.",
+          krrUse: "Grant an action only to actors who meet the policy's authorization conditions."
+        },
+        {
+          type: "Prohibition",
+          keywords: ["must not", "is prohibited from", "cannot"],
+          meaning: "Expresses an action that is forbidden or disallowed.",
+          example: "Applicants must not submit false information.",
+          krrUse: "Block prohibited actions and record the policy basis."
+        },
+        {
+          type: "Recommendation",
+          keywords: ["should", "ought to", "is advisable to"],
+          meaning: "Expresses advice rather than an absolute requirement in ordinary use.",
+          example: "Applicants should check their application status regularly.",
+          krrUse: "Present guidance without misclassifying it as a mandatory rule."
+        },
+        {
+          type: "Requirement",
+          keywords: ["requires", "needs", "is mandatory"],
+          meaning: "Identifies something needed for a process or outcome.",
+          example: "A signed declaration is mandatory.",
+          krrUse: "Check the required item or condition before allowing the process to continue."
+        },
+        {
+          type: "Eligibility",
+          keywords: ["qualifies when", "eligible if", "meets the criteria"],
+          meaning: "States the conditions under which a person qualifies for a stage or benefit.",
+          example: "The applicant is eligible if the score meets the published threshold.",
+          krrUse: "Evaluate all stated eligibility criteria against the applicant's verified information."
+        },
+        {
+          type: "Exception",
+          keywords: ["except", "unless"],
+          meaning: "Identifies a case excluded from a general rule or changes its application.",
+          example: "A late submission is not accepted except where policy permits extension.",
+          krrUse: "Apply exceptions only within the scope and authority stated in policy."
+        },
+        {
+          type: "Priority",
+          keywords: ["priority is given to", "takes precedence over"],
+          meaning: "Establishes that one case or category is handled before another.",
+          example: "An urgent correction request takes precedence over a routine query.",
+          krrUse: "Order queues using the stated priority rule; do not confuse priority with approval."
+        },
+        {
+          type: "Restriction",
+          keywords: ["only", "limited to", "restricted to"],
+          meaning: "Limits availability, scope, or eligible participants.",
+          example: "Access is restricted to authorized officers.",
+          krrUse: "Enforce the defined scope or access boundary."
+        },
+        {
+          type: "Policy-dependent outcome",
+          keywords: ["subject to approval", "according to policy"],
+          meaning: "Makes an outcome dependent on a policy or authorized decision.",
+          example: "A correction request may be accepted subject to university policy.",
+          krrUse: "Refer unresolved cases to the applicable policy or authorized decision-maker."
+        }
+      ]
+    },
+    {
+      id: "sec12",
+      num: 12,
+      name: "Knowledge, Belief & Verification",
+      icon: "🔐",
+      desc: "Known, believed, suspected, reported, verified and derived knowledge",
+      concepts: [
+        {
+          type: "Known information",
+          keywords: ["knows that", "has verified that"],
+          meaning: "Presents information as known or verified by an identified agent.",
+          example: "The officer knows that Ali submitted the required certificate.",
+          krrUse: "Record who knows or verified the claim and on what basis."
+        },
+        {
+          type: "Belief",
+          keywords: ["believes that", "thinks that", "considers that"],
+          meaning: "Reports an agent's belief or judgment, which may not be verified.",
+          example: "The officer believes the certificate may be authentic.",
+          krrUse: "Preserve the belief-holder and do not promote belief to verified fact."
+        },
+        {
+          type: "Suspicion",
+          keywords: ["suspects that", "has reason to suspect"],
+          meaning: "Expresses a reasoned concern that something may be the case.",
+          example: "The officer has reason to suspect a mismatch in the identity details.",
+          krrUse: "Flag for investigation without asserting wrongdoing as established."
+        },
+        {
+          type: "Reported information",
+          keywords: ["reports that", "states that", "according to"],
+          meaning: "Attributes a claim to a speaker or source.",
+          example: "The applicant reports that the fee was paid yesterday.",
+          krrUse: "Store the claim with its source and report time; do not equate it with verification."
+        },
+        {
+          type: "Verified information",
+          keywords: ["verified by", "confirmed through", "authenticated by"],
+          meaning: "Identifies a claim confirmed through an authoritative source or verification process.",
+          example: "The certificate is authenticated by the issuing authority.",
+          krrUse: "Record the verification method and authoritative source."
+        },
+        {
+          type: "Conflicting information",
+          keywords: ["contradicts", "conflicts with", "differs from"],
+          meaning: "Identifies incompatible or inconsistent information.",
+          example: "The date on the certificate contradicts the application date.",
+          krrUse: "Preserve both values and raise a reconciliation task rather than silently choosing one."
+        },
+        {
+          type: "Missing knowledge",
+          keywords: ["does not know whether", "cannot determine whether"],
+          meaning: "States that available information is insufficient to determine a claim.",
+          example: "The system cannot determine whether the certificate is genuine from the available scan.",
+          krrUse: "Keep the truth value unresolved and request further evidence."
+        },
+        {
+          type: "Derived knowledge",
+          keywords: ["implies", "follows from", "can be inferred from"],
+          meaning: "Describes information concluded from other known information.",
+          example: "The verified score and published threshold imply whether the score requirement is met.",
+          krrUse: "Store the inference path or premises so a derived conclusion can be audited."
+        }
+      ]
+    },
+    {
+      id: "sec13",
+      num: 13,
+      name: "Hypothetical & Counterfactual",
+      icon: "💭",
+      desc: "Suppose, what-if, counterfactual past, goals and purposes",
+      concepts: [
+        {
+          type: "Hypothetical situation",
+          keywords: ["suppose", "imagine", "what if"],
+          meaning: "Describes an imagined situation rather than asserting that it occurred.",
+          example: "Suppose the applicant submits the missing certificate tomorrow.",
+          krrUse: "Use a hypothetical branch for planning or scenario analysis; do not record it as an event."
+        },
+        {
+          type: "Counterfactual situation",
+          keywords: ["if…had", "would have", "could have"],
+          meaning: "Describes an alternative to an actual or assumed past situation.",
+          example: "If the applicant had submitted earlier, verification might have finished sooner.",
+          krrUse: "Reason about an unrealized past alternative while keeping actual history unchanged."
+        },
+        {
+          type: "Alternative scenario",
+          keywords: ["alternatively", "another possibility is"],
+          meaning: "Introduces a different possible course or explanation.",
+          example: "Alternatively, the applicant could submit another document approved by university.",
+          krrUse: "Compare approved fallback scenarios."
+        },
+        {
+          type: "Conditional prediction",
+          keywords: ["if this happens, then the system may"],
+          meaning: "Predicts a possible outcome under a stated condition.",
+          example: "If the document is verified, the status may change to complete.",
+          krrUse: "Model a future branch whose outcome depends on a condition."
+        },
+        {
+          type: "Goal or purpose",
+          keywords: ["in order to", "so that", "with the aim of"],
+          meaning: "States the intended purpose of an action.",
+          example: "The applicant uploads the certificate so that the admission office can verify it.",
+          krrUse: "Connect an action to its intended goal; purpose does not prove the goal was achieved."
+        },
+        {
+          type: "Failure to meet a requirement",
+          keywords: ["fails to", "does not satisfy", "falls short of"],
+          meaning: "States that a required criterion is not met.",
+          example: "The applicant fails to meet the minimum score requirement.",
+          krrUse: "Record the unmet criterion and distinguish it from a general rejection decision."
+        }
+      ]
+    },
+    {
+      id: "sec14",
+      num: 14,
+      name: "Questions, Commands & Warnings",
+      icon: "💬",
+      desc: "Information queries, yes/no queries, commands, requests and warnings",
+      concepts: [
+        {
+          type: "Information question",
+          keywords: ["who", "what", "when", "where", "why", "how"],
+          meaning: "Requests information about an entity, event, reason, place, or method.",
+          example: "Who submitted the application? / When was Ali's application submitted?",
+          krrUse: "Route the question to the relevant records or reasoning service."
+        },
+        {
+          type: "Yes-or-no question",
+          keywords: ["is", "does", "has", "can"],
+          meaning: "Requests a status or decision that can be answered yes or no.",
+          example: "Is Ali's application complete? / Has the fee been paid?",
+          krrUse: "Evaluate the proposition and return yes, no, or unknown as appropriate."
+        },
+        {
+          type: "Command",
+          keywords: ["check", "verify", "approve", "reject"],
+          meaning: "Requests an action to be performed.",
+          example: "Check Ali's application. / Approve the application.",
+          krrUse: "Treat as an action request and require authorization before consequential operations."
+        },
+        {
+          type: "Polite request",
+          keywords: ["please", "kindly", "could you"],
+          meaning: "Requests a service in courteous form.",
+          example: "Please show the application's current status.",
+          krrUse: "Interpret the requested service while preserving authorization and privacy checks."
+        },
+        {
+          type: "Instruction",
+          keywords: ["first", "next", "then", "finally"],
+          meaning: "Specifies procedural steps or an ordered method.",
+          example: "First check the score; then verify the documents.",
+          krrUse: "Translate the instruction into ordered workflow steps."
+        },
+        {
+          type: "Warning",
+          keywords: ["be careful", "do not", "ensure that"],
+          meaning: "Highlights a risk or precaution to prevent errors.",
+          example: "Do not mark the fee as paid without confirmation.",
+          krrUse: "Use warnings as safeguards or validation checks before a risky action."
+        }
+      ]
+    },
+    {
+      id: "sec15",
+      num: 15,
+      name: "Rhetorical & Expressive Devices",
+      icon: "💡",
+      desc: "Similarity, contrast, emphasis, qualification, correction and summary",
+      concepts: [
+        {
+          type: "Similarity",
+          keywords: ["similar to", "resembles", "comparable to"],
+          meaning: "Indicates resemblance or comparability.",
+          example: "The applicant's submitted document is similar to the approved format.",
+          krrUse: "Identify comparable records while avoiding an unsupported claim that they are identical."
+        },
+        {
+          type: "Difference",
+          keywords: ["unlike", "in contrast to", "differs from"],
+          meaning: "Highlights a difference between entities or situations.",
+          example: "Unlike Ali's application, Ahmed's application is missing a required document.",
+          krrUse: "Compare records and preserve the attribute on which they differ."
+        },
+        {
+          type: "Emphasis",
+          keywords: ["in particular", "especially", "notably"],
+          meaning: "Draws attention to a specific point.",
+          example: "The payment issue is especially urgent.",
+          krrUse: "Prioritize the emphasized detail without treating emphasis as proof."
+        },
+        {
+          type: "Qualification",
+          keywords: ["in general", "usually", "in this case"],
+          meaning: "Limits or contextualizes the scope of a statement.",
+          example: "In general, complete applications can proceed to verification.",
+          krrUse: "Retain scope qualifiers so a general rule is not applied as universal."
+        },
+        {
+          type: "Limitation",
+          keywords: ["only", "merely", "solely"],
+          meaning: "Restricts what a fact, condition, or piece of evidence establishes.",
+          example: "The recorded score alone does not establish final admission eligibility.",
+          krrUse: "Avoid overclaiming what a single criterion or source establishes."
+        },
+        {
+          type: "Correction",
+          keywords: ["rather", "instead", "more accurately"],
+          meaning: "Revises or replaces an earlier description.",
+          example: "The application is pending rather than rejected.",
+          krrUse: "Update an interpretation while retaining the corrected distinction."
+        },
+        {
+          type: "Addition",
+          keywords: ["furthermore", "moreover", "additionally"],
+          meaning: "Adds another point or item of information.",
+          example: "The documents are complete; furthermore, the fee has been verified.",
+          krrUse: "Accumulate independent facts without confusing addition with conjunction scope."
+        },
+        {
+          type: "Summary",
+          keywords: ["in short", "overall", "in summary"],
+          meaning: "Introduces a condensed account of preceding information.",
+          example: "In short, the applicant has met the documentation requirements.",
+          krrUse: "Generate a concise status summary that remains faithful to underlying records."
+        },
+        {
+          type: "Source attribution",
+          keywords: ["according to", "as reported by", "based on"],
+          meaning: "Identifies the source on which a statement or claim relies.",
+          example: "According to the official record, the fee has been received.",
+          krrUse: "Attach provenance to claims so reported and authoritative sources remain distinguishable."
+        }
+      ]
+    }
+  ],
+
+  // ── SECTION 16: ALL 20 PRACTICAL BENCHMARK CASES ──
+  benchmarkCases: [
+    {
+      num: 1,
+      sentence: "Ali submitted the application and paid the fee.",
+      concept: "Conjunction",
+      cue: "and",
+      analysis: "Both facts hold true together in the knowledge base."
+    },
+    {
+      num: 2,
+      sentence: "The applicant has not submitted the certificate.",
+      concept: "Negation",
+      cue: "has not",
+      analysis: "Explicit negative claim, distinct from data being unrecorded."
+    },
+    {
+      num: 3,
+      sentence: "Every applicant must provide valid identification.",
+      concept: "Universal quantity and obligation",
+      cue: "Every ... must",
+      analysis: "Universal quantification paired with mandatory deontic obligation."
+    },
+    {
+      num: 4,
+      sentence: "Some applicants have incomplete documents.",
+      concept: "Existential quantity",
+      cue: "Some",
+      analysis: "Existential quantifier: at least one applicant matches."
+    },
+    {
+      num: 5,
+      sentence: "The application may proceed only if all required documents are complete.",
+      concept: "Necessary condition",
+      cue: "only if",
+      analysis: "Document completeness is a necessary prerequisite."
+    },
+    {
+      num: 6,
+      sentence: "Unless the fee is paid by the deadline, the application may be cancelled.",
+      concept: "Conditional exception",
+      cue: "Unless",
+      analysis: "Fee payment triggers the exception preventing cancellation."
+    },
+    {
+      num: 7,
+      sentence: "The application was delayed because a required document was missing.",
+      concept: "Explanation or causal claim",
+      cue: "because",
+      analysis: "Gives a causal reason for the delay."
+    },
+    {
+      num: 8,
+      sentence: "The payment receipt provides evidence that Ali paid the fee.",
+      concept: "Evidence and verification",
+      cue: "provides evidence that",
+      analysis: "Official artifact corroborates the payment claim."
+    },
+    {
+      num: 9,
+      sentence: "Ahmed's score is below the required threshold.",
+      concept: "Comparison",
+      cue: "below",
+      analysis: "Lower-value comparison against benchmark."
+    },
+    {
+      num: 10,
+      sentence: "The documents must be verified before the merit list is published.",
+      concept: "Obligation and temporal order",
+      cue: "must ... before",
+      analysis: "Enforces mandatory workflow precedence."
+    },
+    {
+      num: 11,
+      sentence: "The applicant will probably complete verification tomorrow.",
+      concept: "Prediction and uncertainty",
+      cue: "probably",
+      analysis: "Probabilistic forecast, not an established future fact."
+    },
+    {
+      num: 12,
+      sentence: "The system cannot determine whether the certificate is authentic.",
+      concept: "Missing knowledge",
+      cue: "cannot determine whether",
+      analysis: "Explicit epistemic gap; truth remains unresolved."
+    },
+    {
+      num: 13,
+      sentence: "Neither the certificate nor an approved alternative was submitted.",
+      concept: "Joint negation",
+      cue: "Neither ... nor",
+      analysis: "Denies both alternative submissions simultaneously."
+    },
+    {
+      num: 14,
+      sentence: "Ali meets the score requirement; however, his documents are incomplete.",
+      concept: "Contrast",
+      cue: "however",
+      analysis: "Preserves qualification between score success and document deficit."
+    },
+    {
+      num: 15,
+      sentence: "If the applicant had submitted the documents earlier, verification might have finished sooner.",
+      concept: "Counterfactual",
+      cue: "If ... had ... might have",
+      analysis: "Alternative to an actual past without altering actual history."
+    },
+    {
+      num: 16,
+      sentence: "Please check whether Ali's application has been verified.",
+      concept: "Request and information query",
+      cue: "Please check whether",
+      analysis: "Courteous action request initiating an inquiry operation."
+    },
+    {
+      num: 17,
+      sentence: "An applicant may select at most two preferred programs.",
+      concept: "Maximum quantity",
+      cue: "at most",
+      analysis: "Imposes an upper bound cap on selections."
+    },
+    {
+      num: 18,
+      sentence: "The applicant's score matches the verified test result.",
+      concept: "Equality and evidence",
+      cue: "matches",
+      analysis: "Verifies equality with authoritative record."
+    },
+    {
+      num: 19,
+      sentence: "The application remains pending until verification is completed.",
+      concept: "Temporal condition",
+      cue: "until",
+      analysis: "State persistence terminates when event occurs."
+    },
+    {
+      num: 20,
+      sentence: "The applicant reports that the fee was paid, but no payment record is available.",
+      concept: "Reported claim and missing evidence",
+      cue: "reports that ... but no",
+      analysis: "Maintains clear distinction between speaker claim and missing system proof."
+    }
+  ],
+
+  // ── SECTION 17: FIVE-STEP METHOD ──
+  fiveSteps: [
+    {
+      step: 1,
+      title: "Identify Purpose",
+      question: "Is the sentence stating a fact, expressing a condition, giving a rule, asking a question, or drawing a conclusion?",
+      icon: "🎯"
+    },
+    {
+      step: 2,
+      title: "Identify Key Words",
+      question: "Look for words such as 'and', 'unless', 'every', 'before', 'because', 'probably', 'must', or 'therefore'.",
+      icon: "🔑"
+    },
+    {
+      step: 3,
+      title: "Classify Expression",
+      question: "Determine whether it expresses logic, quantity, time, comparison, cause, uncertainty, or obligation.",
+      icon: "🏷️"
+    },
+    {
+      step: 4,
+      title: "Interpret Meaning",
+      question: "Determine what the sentence actually claims, what conditions apply, and whether exceptions or ambiguities exist.",
+      icon: "🧠"
+    },
+    {
+      step: 5,
+      title: "Assess Knowledge",
+      question: "Ask whether the information is established, reported, assumed, uncertain, or inferred — and whether justified.",
+      icon: "⚖️"
+    }
+  ],
+
+  // ── SECTION 18: CORE KRR CAUTIONS & PRINCIPLES ──
+  coreCautions: [
+    {
+      rule: "Fact vs Statement",
+      text: "A fact is accepted as true in the KB; a statement's truth can be assessed true or false."
+    },
+    {
+      rule: "AND vs OR",
+      text: "AND requires all conditions; OR may permit either or both; 'either…or' depends on context."
+    },
+    {
+      rule: "NOR vs NAND",
+      text: "'Neither…nor' denies both; 'Not both' means at least one fails (the other may still hold)."
+    },
+    {
+      rule: "Necessary ≠ Sufficient",
+      text: "A prerequisite is necessary to proceed, but does not by itself guarantee eligibility."
+    },
+    {
+      rule: "Sequence ≠ Causation",
+      text: "'After' establishes temporal order; it does not prove that one event caused another."
+    },
+    {
+      rule: "Because ≠ Proof",
+      text: "'Because' gives an explanation; it does not prove the cause is objectively true."
+    },
+    {
+      rule: "Not Recorded ≠ Not Paid",
+      text: "Absence of a record does not prove the negative claim. Distinguish missing data from false."
+    },
+    {
+      rule: "Reported ≠ Verified",
+      text: "A speaker's report is an unverified claim. Always preserve report provenance."
+    },
+    {
+      rule: "Modals are Contextual",
+      text: "'Must' usually obligates; 'May' can mean permission or possibility; 'Should' advises."
+    }
+  ]
+};
+
+
+</script>
+  <script>
+/* ====================================================
+   KRR Quest — Master Script
+   - 1. User-Scalable Font Size Engine
+   - 2. Horizontal Scroll Ribbon Engine (Mouse Wheel + Arrows)
+   - 3. Interactive Concept Playground (Logic Gates, Cohort Quantifiers, Condition Simulators)
+   - 4. 10-Level Challenge Game (Zero MCQs, Combo Streaks)
+   ==================================================== */
+
+// Audio Synthesizer (Web Audio API)
+class SoundFX {
+  constructor() {
+    this.ctx = null;
+    this.enabled = true;
+  }
+  init() {
+    if (!this.ctx) {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (AudioCtx) this.ctx = new AudioCtx();
+    }
+  }
+  playTone(freq, type = 'sine', duration = 0.15, vol = 0.15) {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+    try {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+      gain.gain.setValueAtTime(vol, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start();
+      osc.stop(this.ctx.currentTime + duration);
+    } catch(e) {}
+  }
+  click() { this.playTone(600, 'triangle', 0.05, 0.08); }
+  correct() {
+    this.playTone(523.25, 'sine', 0.08, 0.12);
+    setTimeout(() => this.playTone(659.25, 'sine', 0.1, 0.12), 70);
+    setTimeout(() => this.playTone(783.99, 'sine', 0.22, 0.14), 140);
+  }
+  wrong() {
+    this.playTone(220, 'sawtooth', 0.18, 0.12);
+    setTimeout(() => this.playTone(180, 'sawtooth', 0.22, 0.12), 100);
+  }
+  fanfare() {
+    const notes = [523.25, 659.25, 783.99, 1046.50];
+    notes.forEach((n, i) => {
+      setTimeout(() => this.playTone(n, 'triangle', 0.25, 0.16), i * 110);
+    });
+  }
+}
+const sfx = new SoundFX();
+
+// ====================================================
+// USER FONT-SIZE ACCESSIBILITY CONTROLLER
+// ====================================================
+const FONT_STEPS = [13.5, 14.5, 15.5, 17, 18.5, 20];
+let currentFontIdx = 2; // Default 15.5px (100%)
+
+function initFontSizeController() {
+  const savedIdx = localStorage.getItem('krr_font_idx');
+  if (savedIdx !== null && !isNaN(savedIdx)) {
+    currentFontIdx = Math.max(0, Math.min(FONT_STEPS.length - 1, parseInt(savedIdx, 10)));
+  }
+  applyFontSize(currentFontIdx);
+
+  const decBtn = document.getElementById('fontDecBtn');
+  const incBtn = document.getElementById('fontIncBtn');
+  const resetBtn = document.getElementById('fontResetBtn');
+
+  if (decBtn) {
+    decBtn.addEventListener('click', () => {
+      sfx.click();
+      if (currentFontIdx > 0) {
+        currentFontIdx--;
+        applyFontSize(currentFontIdx);
+      }
+    });
+  }
+
+  if (incBtn) {
+    incBtn.addEventListener('click', () => {
+      sfx.click();
+      if (currentFontIdx < FONT_STEPS.length - 1) {
+        currentFontIdx++;
+        applyFontSize(currentFontIdx);
+      }
+    });
+  }
+
+  if (resetBtn) {
+    resetBtn.addEventListener('click', () => {
+      sfx.click();
+      currentFontIdx = 2; // Reset to 100%
+      applyFontSize(currentFontIdx);
+    });
+  }
+}
+
+function applyFontSize(idx) {
+  const px = FONT_STEPS[idx];
+  document.documentElement.style.fontSize = px + 'px';
+  const pct = Math.round((px / 15.5) * 100);
+  const disp = document.getElementById('fontSizeDisplay');
+  if (disp) disp.textContent = pct + '%';
+  try { localStorage.setItem('krr_font_idx', idx); } catch(e) {}
+}
+
+// ====================================================
+// HORIZONTAL RIBBON SCROLL ENGINE (MOUSE WHEEL + ARROWS)
+// ====================================================
+function setupRibbonScroll(leftBtnId, rightBtnId, scrollContainerId) {
+  const leftBtn = document.getElementById(leftBtnId);
+  const rightBtn = document.getElementById(rightBtnId);
+  const container = document.getElementById(scrollContainerId);
+
+  if (!container) return;
+
+  // Arrow buttons
+  if (leftBtn) {
+    leftBtn.addEventListener('click', () => {
+      sfx.click();
+      container.scrollBy({ left: -260, behavior: 'smooth' });
+    });
+  }
+
+  if (rightBtn) {
+    rightBtn.addEventListener('click', () => {
+      sfx.click();
+      container.scrollBy({ left: 260, behavior: 'smooth' });
+    });
+  }
+
+  // Smooth mouse-wheel horizontal scrolling
+  container.addEventListener('wheel', (e) => {
+    if (e.deltaY !== 0) {
+      e.preventDefault();
+      container.scrollLeft += e.deltaY;
+    }
+  }, { passive: false });
+}
+
+/* ====================================================
+   PHASE 1: COMPLETE INTERACTIVE TABLE EXPLORER
+   (Sections 3 to 18 — All Tables & Concepts)
+   ==================================================== */
+let activeSecIdx = 0;
+let activeRowIdx = 0;
+let explorerSections = [];
+
+function buildExplorerSections() {
+  explorerSections = [];
+  if (typeof KRR_DATABASE !== 'undefined') {
+    // 1. Categories 3 to 15 (113 concepts)
+    if (KRR_DATABASE.categories) {
+      KRR_DATABASE.categories.forEach(cat => {
+        explorerSections.push({
+          num: cat.num,
+          id: cat.id,
+          name: cat.name,
+          desc: cat.desc,
+          concepts: cat.concepts.map((c, i) => ({
+            type: c.type,
+            keywords: c.keywords || [],
+            meaning: c.meaning,
+            example: c.example,
+            krrUse: c.krrUse,
+            rowNum: i + 1
+          }))
+        });
+      });
+    }
+
+    // 2. Section 16: Benchmark Cases (20 cases)
+    if (KRR_DATABASE.benchmarkCases) {
+      explorerSections.push({
+        num: 16,
+        id: "sec16",
+        name: "20 Benchmark Test Cases",
+        desc: "Section 16: Complete reference validation suite covering all expression types",
+        concepts: KRR_DATABASE.benchmarkCases.map(bc => ({
+          type: `Case ${bc.num}: ${bc.concept}`,
+          keywords: bc.cue ? bc.cue.split(/\s+/) : ["benchmark"],
+          meaning: `Validation benchmark #${bc.num} from Section 16 of the KRR reference guide.`,
+          example: bc.sentence,
+          krrUse: bc.analysis,
+          rowNum: bc.num
+        }))
+      });
+    }
+
+    // 3. Section 17: Five-Step Method (5 steps)
+    if (KRR_DATABASE.fiveSteps) {
+      explorerSections.push({
+        num: 17,
+        id: "sec17",
+        name: "5-Step Systematic Method",
+        desc: "Section 17: Practical step-by-step guide for students to analyze any sentence",
+        concepts: KRR_DATABASE.fiveSteps.map(st => ({
+          type: `Step ${st.step}: ${st.title}`,
+          keywords: ["systematic analysis", "student method"],
+          meaning: st.question,
+          example: `Applying Step ${st.step} ensures no hidden condition or ambiguity is overlooked.`,
+          krrUse: "Follow this procedure during exams and system implementation to transform natural language into formal representations.",
+          rowNum: st.step
+        }))
+      });
+    }
+
+    // 4. Section 18: Critical Cautions (9 cautions)
+    if (KRR_DATABASE.coreCautions) {
+      explorerSections.push({
+        num: 18,
+        id: "sec18",
+        name: "Critical Cautions & Nuances",
+        desc: "Section 18: Core conceptual boundaries that prevent fatal reasoning errors in KRR",
+        concepts: KRR_DATABASE.coreCautions.map((cc, i) => ({
+          type: cc.rule,
+          keywords: cc.rule.split(/\s+/),
+          meaning: cc.text,
+          example: `Caution: Do not confuse ${cc.rule}!`,
+          krrUse: "Always verify this distinction before committing facts or inferring conclusions in the knowledge base.",
+          rowNum: i + 1
+        }))
+      });
+    }
+  }
+}
+
+function escapeRegex(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function formatSentenceWithCue(example, keywords) {
+  if (!example) return '';
+  const sentences = example.split(' / ');
+  const mainSentence = sentences[0].trim();
+  
+  if (!keywords || keywords.length === 0) {
+    return `"${mainSentence}"`;
+  }
+
+  let bestMatch = null;
+  let bestLen = 0;
+  for (const kw of keywords) {
+    const cleanKw = kw.replace(/^[•\s]+/, '').trim();
+    if (!cleanKw || cleanKw.length < 2) continue;
+    const regex = new RegExp(`\\b(${escapeRegex(cleanKw)})\\b`, 'i');
+    const match = mainSentence.match(regex);
+    if (match && cleanKw.length > bestLen) {
+      bestMatch = match[0];
+      bestLen = cleanKw.length;
+    }
+  }
+
+  if (bestMatch) {
+    const highlighted = mainSentence.replace(new RegExp(`\\b(${escapeRegex(bestMatch)})\\b`, 'i'), `<span class="highlight-cue">$1</span>`);
+    return `"${highlighted}"`;
+  }
+  
+  for (const kw of keywords) {
+    const cleanKw = kw.replace(/^[•\s]+/, '').trim();
+    if (cleanKw && cleanKw.length > 2 && mainSentence.toLowerCase().includes(cleanKw.toLowerCase())) {
+      const regex = new RegExp(`(${escapeRegex(cleanKw)})`, 'i');
+      return `"${mainSentence.replace(regex, `<span class="highlight-cue">$1</span>`)}"`;
+    }
+  }
+
+  return `"${mainSentence}"`;
+}
+
+// ====================================================
+// INTERACTIVE CONCEPT PLAYGROUND ENGINE
+// Tailored visual experiments for each concept type
+// ====================================================
+function renderSimWidget(concept, sec, simContainer) {
+  if (!simContainer) return;
+  const rawSentence = concept.example.split('/')[0].trim();
+  
+  // Find keyword matching in this sentence
+  let kw = (concept.keywords && concept.keywords.length > 0) ? concept.keywords[0].trim() : "cue word";
+  if (concept.keywords && concept.keywords.length > 0) {
+    for (const k of concept.keywords) {
+      const clean = k.replace(/^[•\s]+/, '').trim();
+      if (!clean || clean.length < 2) continue;
+      const regex = new RegExp(`\\b${escapeRegex(clean)}\\b`, 'i');
+      if (regex.test(rawSentence)) {
+        kw = clean;
+        break;
+      }
+    }
+  }
+
+  const typeLower = concept.type.toLowerCase();
+
+  // ─────────────────────────────────────────────────────────────
+  // EXPERIMENT 1: LOGIC CIRCUIT SIMULATOR (Section 4 Connectives)
+  // ─────────────────────────────────────────────────────────────
+  if (sec.num === 4) {
+    let gateName = "AND";
+    if (typeLower.includes("disjunction") || typeLower.includes("or")) gateName = "OR";
+    if (typeLower.includes("exclusive") || typeLower.includes("xor")) gateName = "XOR";
+    if (typeLower.includes("joint") || typeLower.includes("nor") || typeLower.includes("neither")) gateName = "NOR";
+    if (typeLower.includes("exclusion") || typeLower.includes("nand")) gateName = "NAND";
+    if (typeLower.includes("two-way") || typeLower.includes("biconditional") || typeLower.includes("iff")) gateName = "IFF";
+    if (typeLower.includes("conditional") && !typeLower.includes("biconditional")) gateName = "IF";
+    if (typeLower.includes("negation") && !typeLower.includes("joint") && !typeLower.includes("alternative")) gateName = "NOT";
+
+    simContainer.innerHTML = `
+      <div class="lab-container-card">
+        <div class="lab-top-row">
+          <div class="lab-title-group">
+            <span class="lab-heading">🔌 Interactive Logic Circuit Simulator</span>
+            <span class="lab-subtitle">Click the input switches below to test the truth value of this connective</span>
+          </div>
+          <span class="gate-badge-box">${gateName} GATE</span>
+        </div>
+
+        <div class="logic-circuit-grid">
+          <div class="circuit-input-col">
+            <button class="circuit-toggle-btn on" id="toggleInputA">
+              <span>Input A: Valid Test Score</span>
+              <div class="toggle-led"></div>
+            </button>
+            ${gateName !== 'NOT' ? `
+            <button class="circuit-toggle-btn" id="toggleInputB">
+              <span>Input B: Paid Admission Fee</span>
+              <div class="toggle-led"></div>
+            </button>
+            ` : ''}
+          </div>
+
+          <div style="font-size:1.4rem;color:#38bdf8;text-align:center;">➔</div>
+
+          <div class="gate-badge-box" style="font-size:0.95rem;padding:0.75rem 0.5rem;">
+            <div>LOGIC GATE</div>
+            <div style="color:#38bdf8;font-size:1.15rem;margin-top:2px;">${gateName}</div>
+          </div>
+
+          <div style="font-size:1.4rem;color:#38bdf8;text-align:center;">➔</div>
+
+          <div class="circuit-output-box">
+            <span style="font-size:0.75rem;color:#94a3b8;font-weight:700;">OUTPUT:</span>
+            <div class="circuit-output-badge" id="circuitResultBadge">EVALUATING</div>
+          </div>
+        </div>
+
+        <div class="circuit-explain-card" id="circuitExplainText"></div>
+      </div>
+    `;
+
+    let stateA = true;
+    let stateB = false;
+
+    const btnA = simContainer.querySelector('#toggleInputA');
+    const btnB = simContainer.querySelector('#toggleInputB');
+    const resBadge = simContainer.querySelector('#circuitResultBadge');
+    const expText = simContainer.querySelector('#circuitExplainText');
+
+    function evalCircuit() {
+      let result = false;
+      if (gateName === "AND") result = stateA && stateB;
+      else if (gateName === "OR") result = stateA || stateB;
+      else if (gateName === "NOT") result = !stateA;
+      else if (gateName === "XOR") result = (stateA || stateB) && !(stateA && stateB);
+      else if (gateName === "NOR") result = !(stateA || stateB);
+      else if (gateName === "NAND") result = !(stateA && stateB);
+      else if (gateName === "IF") result = (!stateA) || stateB;
+      else if (gateName === "IFF") result = stateA === stateB;
+
+      resBadge.textContent = result ? "PASS (TRUE)" : "FAIL (FALSE)";
+      resBadge.className = "circuit-output-badge " + (result ? "pass" : "fail");
+
+      if (gateName === "AND") {
+        expText.innerHTML = `<strong>KRR Truth Rule:</strong> AND requires <em>both</em> conditions to be True. Current: (A=${stateA ? 'T' : 'F'} ∧ B=${stateB ? 'T' : 'F'}) ➔ ${result ? 'Passed!' : 'Fails because both are not satisfied simultaneously.'}`;
+      } else if (gateName === "OR") {
+        expText.innerHTML = `<strong>KRR Truth Rule:</strong> OR is satisfied if <em>at least one</em> condition holds true. Current: ${result ? 'Passed (at least one is true).' : 'Fails (both are false).'}`;
+      } else if (gateName === "NOR") {
+        expText.innerHTML = `<strong>KRR Truth Rule:</strong> 'Neither…nor' strictly denies both. It evaluates to True <em>only when neither input is true</em>.`;
+      } else if (gateName === "XOR") {
+        expText.innerHTML = `<strong>KRR Truth Rule:</strong> Exclusive-OR permits strictly one option, but never both together.`;
+      } else if (gateName === "IFF") {
+        expText.innerHTML = `<strong>KRR Truth Rule:</strong> Biconditional holds if and only if both sides have identical truth values.`;
+      } else {
+        expText.innerHTML = `<strong>KRR Truth Rule:</strong> ${concept.meaning} Practical Action: ${concept.krrUse}`;
+      }
+    }
+
+    btnA.addEventListener('click', () => {
+      sfx.click();
+      stateA = !stateA;
+      btnA.classList.toggle('on', stateA);
+      evalCircuit();
+    });
+
+    if (btnB) {
+      btnB.addEventListener('click', () => {
+        sfx.click();
+        stateB = !stateB;
+        btnB.classList.toggle('on', stateB);
+        evalCircuit();
+      });
+    }
+
+    evalCircuit();
+    return;
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // EXPERIMENT 2: POLICY & PREREQUISITE SIMULATOR (Section 5)
+  // ─────────────────────────────────────────────────────────────
+  if (sec.num === 5 || typeLower.includes("necessary") || typeLower.includes("sufficient") || typeLower.includes("prerequisite") || typeLower.includes("unless")) {
+    const isNecessary = typeLower.includes("necessary") || typeLower.includes("only if") || typeLower.includes("prerequisite");
+    const isSufficient = typeLower.includes("sufficient");
+    const isUnless = typeLower.includes("unless") || typeLower.includes("exception");
+
+    simContainer.innerHTML = `
+      <div class="lab-container-card">
+        <div class="lab-top-row">
+          <div class="lab-title-group">
+            <span class="lab-heading">📜 Interactive Policy & Prerequisite Rule Simulator</span>
+            <span class="lab-subtitle">Toggle the prerequisite switches to test how policy rules govern admission outcomes</span>
+          </div>
+          <span class="stage-badge">${concept.type}</span>
+        </div>
+
+        <div class="logic-circuit-grid">
+          <div class="circuit-input-col">
+            <button class="circuit-toggle-btn on" id="togglePrereqFee">
+              <span>Prerequisite: Fee Paid</span>
+              <div class="toggle-led"></div>
+            </button>
+            <button class="circuit-toggle-btn" id="togglePrereqDocs">
+              <span>Prerequisite: Documents Verified</span>
+              <div class="toggle-led"></div>
+            </button>
+          </div>
+
+          <div style="font-size:1.4rem;color:#38bdf8;text-align:center;">➔</div>
+
+          <div class="gate-badge-box" style="font-size:0.92rem;padding:0.75rem 0.6rem;">
+            <div>RULE ENGINE</div>
+            <div style="color:#38bdf8;font-size:1.05rem;margin-top:2px;">${concept.type.split(' ')[0]}</div>
+          </div>
+
+          <div style="font-size:1.4rem;color:#38bdf8;text-align:center;">➔</div>
+
+          <div class="circuit-output-box">
+            <span style="font-size:0.75rem;color:#94a3b8;font-weight:700;">DECISION:</span>
+            <div class="circuit-output-badge" id="policyResultBadge">EVALUATING</div>
+          </div>
+        </div>
+
+        <div class="circuit-explain-card" id="policyExplainText"></div>
+      </div>
+    `;
+
+    let feePaid = true;
+    let docsVerified = false;
+
+    const btnFee = simContainer.querySelector('#togglePrereqFee');
+    const btnDocs = simContainer.querySelector('#togglePrereqDocs');
+    const resBadge = simContainer.querySelector('#policyResultBadge');
+    const expText = simContainer.querySelector('#policyExplainText');
+
+    function evalPolicy() {
+      if (isNecessary) {
+        if (!feePaid) {
+          resBadge.textContent = "BLOCKED (FAIL)";
+          resBadge.className = "circuit-output-badge fail";
+          expText.innerHTML = `<strong>⚠️ Policy Blocked:</strong> 'Only if' denotes a <em>mandatory prerequisite</em>. Since Fee Paid is False, the workflow is strictly blocked from proceeding.`;
+        } else {
+          resBadge.textContent = "PROCEEDING (PASS)";
+          resBadge.className = "circuit-output-badge pass";
+          expText.innerHTML = `<strong>✔ Prerequisite Satisfied:</strong> The mandatory prerequisite is satisfied! <em>Caution:</em> Meeting a necessary condition allows the application to proceed, but does not guarantee final admission on its own.`;
+        }
+      } else if (isSufficient) {
+        const passed = feePaid && docsVerified;
+        resBadge.textContent = passed ? "GUARANTEED (PASS)" : "NOT YET SATISFIED";
+        resBadge.className = "circuit-output-badge " + (passed ? "pass" : "fail");
+        expText.innerHTML = `<strong>⭐ Sufficient Condition:</strong> A sufficient condition guarantees the outcome automatically once satisfied. Current: ${passed ? 'All criteria met ➔ Admission Guaranteed!' : 'Criteria incomplete.'}`;
+      } else if (isUnless) {
+        resBadge.textContent = feePaid ? "ACTIVE (PROTECTED)" : "CANCELLED";
+        resBadge.className = "circuit-output-badge " + (feePaid ? "pass" : "fail");
+        expText.innerHTML = `<strong>⚡ Exception Rule ('Unless'):</strong> 'Unless the fee is paid, application is cancelled'. Current: Fee is ${feePaid ? 'PAID ➔ Exception prevents cancellation!' : 'UNPAID ➔ System marks record as CANCELLED.'}`;
+      } else {
+        resBadge.textContent = feePaid ? "STATUS OK" : "PENDING";
+        resBadge.className = "circuit-output-badge " + (feePaid ? "pass" : "fail");
+        expText.innerHTML = `<strong>Policy Rule:</strong> ${concept.meaning} <strong>KRR Action:</strong> ${concept.krrUse}`;
+      }
+    }
+
+    btnFee.addEventListener('click', () => {
+      sfx.click();
+      feePaid = !feePaid;
+      btnFee.classList.toggle('on', feePaid);
+      evalPolicy();
+    });
+
+    btnDocs.addEventListener('click', () => {
+      sfx.click();
+      docsVerified = !docsVerified;
+      btnDocs.classList.toggle('on', docsVerified);
+      evalPolicy();
+    });
+
+    evalPolicy();
+    return;
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // EXPERIMENT 3: QUANTIFIERS & COHORT INSPECTOR (Section 6)
+  // ─────────────────────────────────────────────────────────────
+  if (sec.num === 6 || typeLower.includes("quantifier") || typeLower.includes("all") || typeLower.includes("some") || typeLower.includes("none") || typeLower.includes("each") || typeLower.includes("every")) {
+    simContainer.innerHTML = `
+      <div class="lab-container-card">
+        <div class="lab-top-row">
+          <div class="lab-title-group">
+            <span class="lab-heading">👥 Interactive Cohort Quantifier Inspector</span>
+            <span class="lab-subtitle">Click any student avatar below to toggle verification status and watch the quantifier rule update</span>
+          </div>
+          <span class="stage-badge" id="cohortRatioBadge">3 / 5 Verified</span>
+        </div>
+
+        <div class="cohort-avatars-row" id="cohortAvatarRow">
+          <div class="student-avatar-chip active" data-idx="0"><span class="avatar-ico">👤</span><div><div class="avatar-name">Ali</div><div class="avatar-chk">✔ Verified</div></div></div>
+          <div class="student-avatar-chip active" data-idx="1"><span class="avatar-ico">👤</span><div><div class="avatar-name">Sara</div><div class="avatar-chk">✔ Verified</div></div></div>
+          <div class="student-avatar-chip active" data-idx="2"><span class="avatar-ico">👤</span><div><div class="avatar-name">Bilal</div><div class="avatar-chk">✔ Verified</div></div></div>
+          <div class="student-avatar-chip" data-idx="3"><span class="avatar-ico">👤</span><div><div class="avatar-name">Zainab</div><div class="avatar-chk">⏳ Missing</div></div></div>
+          <div class="student-avatar-chip" data-idx="4"><span class="avatar-ico">👤</span><div><div class="avatar-name">Ahmed</div><div class="avatar-chk">⏳ Missing</div></div></div>
+        </div>
+
+        <div class="circuit-explain-card" id="cohortExplainText"></div>
+      </div>
+    `;
+
+    const chips = simContainer.querySelectorAll('.student-avatar-chip');
+    const ratioBadge = simContainer.querySelector('#cohortRatioBadge');
+    const expText = simContainer.querySelector('#cohortExplainText');
+
+    let cohortStates = [true, true, true, false, false];
+
+    function evalCohort() {
+      const verifiedCount = cohortStates.filter(Boolean).length;
+      ratioBadge.textContent = `${verifiedCount} / 5 Verified`;
+
+      let conditionMet = false;
+      let ruleDesc = "";
+
+      if (typeLower.includes("all") || typeLower.includes("every") || typeLower.includes("each")) {
+        conditionMet = (verifiedCount === 5);
+        ruleDesc = `Universal Quantifier (∀): 'All applicants must have verified docs'. Currently: ${verifiedCount}/5 verified. Result: ${conditionMet ? '✅ TRUE (Every applicant is verified)' : '❌ FALSE (Not all applicants are verified)'}`;
+      } else if (typeLower.includes("some") || typeLower.includes("at least one")) {
+        conditionMet = (verifiedCount >= 1);
+        ruleDesc = `Existential Quantifier (∃): 'Some applicants have verified docs'. Currently: ${verifiedCount} verified. Result: ${conditionMet ? '✅ TRUE (At least one is verified)' : '❌ FALSE (Zero verified)'}`;
+      } else if (typeLower.includes("none") || typeLower.includes("no ") || typeLower.includes("neither")) {
+        conditionMet = (verifiedCount === 0);
+        ruleDesc = `Negated Existential (¬∃): 'No applicant has verified docs'. Currently: ${verifiedCount} verified. Result: ${conditionMet ? '✅ TRUE (Zero verified)' : '❌ FALSE (Some are verified)'}`;
+      } else if (typeLower.includes("most") || typeLower.includes("majority")) {
+        conditionMet = (verifiedCount >= 3);
+        ruleDesc = `Majority Quantifier: 'Most applicants have verified docs' (>50%). Currently: ${verifiedCount}/5 verified. Result: ${conditionMet ? '✅ TRUE (Strict majority satisfied)' : '❌ FALSE (Majority not met)'}`;
+      } else if (typeLower.includes("exactly one")) {
+        conditionMet = (verifiedCount === 1);
+        ruleDesc = `Exact Count: 'Exactly one applicant has verified docs'. Currently: ${verifiedCount} verified. Result: ${conditionMet ? '✅ TRUE' : '❌ FALSE'}`;
+      } else {
+        ruleDesc = `Rule: ${concept.meaning}. KRR Action: ${concept.krrUse}`;
+      }
+
+      expText.innerHTML = `<strong>Quantifier Assessment:</strong> ${ruleDesc}`;
+    }
+
+    chips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        sfx.click();
+        const idx = parseInt(chip.dataset.idx, 10);
+        cohortStates[idx] = !cohortStates[idx];
+        chip.classList.toggle('active', cohortStates[idx]);
+        chip.querySelector('.avatar-chk').textContent = cohortStates[idx] ? '✔ Verified' : '⏳ Missing';
+        evalCohort();
+      });
+    });
+
+    evalCohort();
+    return;
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // EXPERIMENT 4: LIVE REASONING PIPELINE (Sections 3, 7-18)
+  // ─────────────────────────────────────────────────────────────
+  // ─────────────────────────────────────────────────────────────
+  // EXPERIMENT 3: LIVE REASONING PIPELINE (Sections 3, 6-18)
+  // ─────────────────────────────────────────────────────────────
+  simContainer.innerHTML = `
+    <div class="lab-container-card">
+      <div class="lab-top-row">
+        <div class="lab-title-group">
+          <span class="lab-heading">⚡ Live AI Reasoning Pipeline Demonstration</span>
+          <span class="lab-subtitle">Observe how natural language transforms into formal knowledge base facts</span>
+        </div>
+        <button class="btn btn-primary" id="simExecuteBtn">▶️ Run Live AI Reasoner</button>
+      </div>
+
+      <div class="logic-circuit-grid" style="grid-template-columns: 1fr auto 1fr auto 1fr;">
+        <div style="background:var(--bg-dark);padding:0.85rem;border-radius:var(--radius-sm);border:1px solid var(--surface-border);" id="boxStep1">
+          <div style="font-size:0.75rem;color:#38bdf8;font-weight:800;text-transform:uppercase;">1. Input Sentence</div>
+          <div style="font-size:0.9rem;font-weight:600;margin:0.25rem 0;color:#fff;">"${rawSentence}"</div>
+          <div style="font-size:0.78rem;color:#94a3b8;">Key Cue: <span style="color:#38bdf8;font-weight:800;background:rgba(6,182,212,0.15);padding:1px 6px;border-radius:4px;">${kw}</span></div>
+        </div>
+
+        <div style="font-size:1.3rem;color:#38bdf8;text-align:center;">➔</div>
+
+        <div style="background:var(--bg-dark);padding:0.85rem;border-radius:var(--radius-sm);border:1px solid var(--surface-border);" id="boxStep2">
+          <div style="font-size:0.75rem;color:#38bdf8;font-weight:800;text-transform:uppercase;">2. Logic Reasoner</div>
+          <div style="font-size:0.9rem;font-weight:700;color:#fff;margin:0.25rem 0;">Type: ${concept.type}</div>
+          <div style="font-size:0.78rem;color:#94a3b8;">Sec ${sec.num} Classification</div>
+        </div>
+
+        <div style="font-size:1.3rem;color:#38bdf8;text-align:center;">➔</div>
+
+        <div style="background:var(--bg-dark);padding:0.85rem;border-radius:var(--radius-sm);border:1px solid var(--surface-border);" id="boxStep3">
+          <div style="font-size:0.75rem;color:#38bdf8;font-weight:800;text-transform:uppercase;">3. Knowledge Base</div>
+          <div style="font-size:0.9rem;font-weight:700;color:#f87171;margin:0.25rem 0;" id="kbStatusTitle">Awaiting Trigger...</div>
+          <div style="font-size:0.78rem;color:#94a3b8;" id="kbStatusSub">Click Run to process</div>
+        </div>
+      </div>
+
+      <div class="circuit-explain-card" id="pipelineExplainBox" style="display:none;"></div>
+    </div>
+  `;
+
+  const runBtn = simContainer.querySelector('#simExecuteBtn');
+  const box1 = simContainer.querySelector('#boxStep1');
+  const box2 = simContainer.querySelector('#boxStep2');
+  const box3 = simContainer.querySelector('#boxStep3');
+  const kbTitle = simContainer.querySelector('#kbStatusTitle');
+  const kbSub = simContainer.querySelector('#kbStatusSub');
+  const expBox = simContainer.querySelector('#pipelineExplainBox');
+
+  runBtn.addEventListener('click', () => {
+    sfx.correct();
+
+    box1.style.borderColor = "#38bdf8";
+    setTimeout(() => {
+      box2.style.borderColor = "#38bdf8";
+    }, 180);
+
+    setTimeout(() => {
+      box3.style.borderColor = "#10b981";
+      kbTitle.innerHTML = `<span style="color:#34d399;">✔ Asserted in KB</span>`;
+      kbSub.textContent = `Rule committed: ${concept.type}`;
+
+      expBox.style.display = 'block';
+      expBox.innerHTML = `
+        <p style="margin-bottom:0.35rem;"><strong>🎯 Practical KRR Impact:</strong> ${concept.krrUse}</p>
+        <p style="font-size:0.86rem;color:#94a3b8;"><strong>💡 Why this matters:</strong> In AI systems, identifying <em>"${kw}"</em> enables the reasoning engine to categorize this information correctly as <strong>${concept.type}</strong> rather than confusing it with a tentative assumption or unverified claim.</p>
+      `;
+
+      runBtn.textContent = "✔ Reasoned & Verified";
+      runBtn.style.background = "#059669";
+    }, 400);
+  });
+}
+
+function initTableExplorer() {
+  buildExplorerSections();
+
+  const secPillList = document.getElementById('sectionPillList');
+  secPillList.innerHTML = '';
+
+  explorerSections.forEach((sec, idx) => {
+    const pill = document.createElement('button');
+    pill.className = 'sec-pill-btn' + (idx === 0 ? ' active' : '');
+    pill.textContent = `Sec ${sec.num}: ${sec.name.split(':')[0].split('&')[0].trim()}`;
+    pill.title = `Section ${sec.num}: ${sec.name}`;
+    pill.addEventListener('click', () => {
+      sfx.click();
+      selectSection(idx, 0);
+    });
+    secPillList.appendChild(pill);
+  });
+
+  // Navigation Buttons
+  document.getElementById('prevConceptBtn').addEventListener('click', () => {
+    sfx.click();
+    navigateConcept(-1);
+  });
+
+  document.getElementById('nextConceptBtn').addEventListener('click', () => {
+    sfx.click();
+    navigateConcept(1);
+  });
+
+  document.getElementById('practiceThisSecBtn').addEventListener('click', () => {
+    sfx.click();
+    practiceCurrentSection();
+  });
+
+  // Setup Smooth Ribbon Scrollbars with Buttons & Mousewheel
+  setupRibbonScroll('secScrollLeftBtn', 'secScrollRightBtn', 'sectionPillList');
+  setupRibbonScroll('rowScrollLeftBtn', 'rowScrollRightBtn', 'tableItemPills');
+  setupRibbonScroll('lvlScrollLeftBtn', 'lvlScrollRightBtn', 'levelQuickBar');
+
+  // Select first section (Section 3)
+  selectSection(0, 0);
+}
+
+function selectSection(secIdx, rowIdx = 0) {
+  activeSecIdx = secIdx;
+  activeRowIdx = rowIdx;
+  const sec = explorerSections[secIdx];
+  if (!sec) return;
+
+  document.querySelectorAll('.sec-pill-btn').forEach((p, i) => {
+    p.classList.toggle('active', i === secIdx);
+  });
+
+  const activeSecPill = document.querySelectorAll('.sec-pill-btn')[secIdx];
+  if (activeSecPill) {
+    activeSecPill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }
+
+  document.getElementById('secBadge').textContent = `Section ${sec.num}`;
+  document.getElementById('secTitle').textContent = sec.name;
+  document.getElementById('secDescription').textContent = sec.desc;
+
+  const itemPills = document.getElementById('tableItemPills');
+  itemPills.innerHTML = '';
+
+  sec.concepts.forEach((concept, rIdx) => {
+    const pill = document.createElement('button');
+    pill.className = 'item-pill-btn' + (rIdx === rowIdx ? ' active' : '');
+    pill.textContent = concept.type;
+    pill.addEventListener('click', () => {
+      sfx.click();
+      selectRow(rIdx);
+    });
+    itemPills.appendChild(pill);
+  });
+
+  renderConceptStage(secIdx, rowIdx);
+}
+
+function selectRow(rowIdx) {
+  activeRowIdx = rowIdx;
+  const sec = explorerSections[activeSecIdx];
+  if (!sec || !sec.concepts[rowIdx]) return;
+
+  document.querySelectorAll('.item-pill-btn').forEach((p, i) => {
+    p.classList.toggle('active', i === rowIdx);
+  });
+
+  const activeItemPill = document.querySelectorAll('.item-pill-btn')[rowIdx];
+  if (activeItemPill) {
+    activeItemPill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }
+
+  renderConceptStage(activeSecIdx, rowIdx);
+}
+
+function renderConceptStage(secIdx, rowIdx) {
+  const sec = explorerSections[secIdx];
+  const concept = sec.concepts[rowIdx];
+  if (!concept) return;
+
+  document.getElementById('conceptTypeName').textContent = concept.type;
+  document.getElementById('conceptSecTag').textContent = `Section ${sec.num} • Row ${concept.rowNum}`;
+  document.getElementById('conceptCounter').textContent = `Row ${rowIdx + 1} of ${sec.concepts.length} in this table`;
+
+  document.getElementById('sentenceHeroText').innerHTML = formatSentenceWithCue(concept.example, concept.keywords);
+
+  const kwWrap = document.getElementById('conceptKeywordsList');
+  kwWrap.innerHTML = '';
+  if (concept.keywords && concept.keywords.length > 0) {
+    concept.keywords.forEach(kw => {
+      const badge = document.createElement('span');
+      badge.className = 'kw-badge';
+      badge.textContent = kw;
+      kwWrap.appendChild(badge);
+    });
+  } else {
+    kwWrap.innerHTML = `<span class="kw-badge">Standard Form</span>`;
+  }
+
+  document.getElementById('conceptMeaningText').textContent = concept.meaning;
+  document.getElementById('conceptKrrActionText').textContent = concept.krrUse;
+
+  renderSimWidget(concept, sec, document.getElementById('conceptSimArea'));
+
+  const dotsContainer = document.getElementById('conceptItemDots');
+  dotsContainer.innerHTML = '';
+  sec.concepts.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'item-dot' + (i === rowIdx ? ' active' : '');
+    dot.title = `Row ${i + 1}`;
+    dot.addEventListener('click', () => {
+      sfx.click();
+      selectRow(i);
+    });
+    dotsContainer.appendChild(dot);
+  });
+
+  const prevBtn = document.getElementById('prevConceptBtn');
+  const nextBtn = document.getElementById('nextConceptBtn');
+
+  prevBtn.disabled = (secIdx === 0 && rowIdx === 0);
+  if (rowIdx < sec.concepts.length - 1) {
+    nextBtn.textContent = "Next Row →";
+  } else if (secIdx < explorerSections.length - 1) {
+    nextBtn.textContent = `Next Table (Sec ${explorerSections[secIdx + 1].num}) →`;
+  } else {
+    nextBtn.textContent = "Play Practice Game 🎮";
+  }
+}
+
+function navigateConcept(delta) {
+  const sec = explorerSections[activeSecIdx];
+  let newRow = activeRowIdx + delta;
+
+  if (newRow >= 0 && newRow < sec.concepts.length) {
+    selectRow(newRow);
+  } else if (delta > 0 && activeSecIdx < explorerSections.length - 1) {
+    selectSection(activeSecIdx + 1, 0);
+  } else if (delta < 0 && activeSecIdx > 0) {
+    const prevSec = explorerSections[activeSecIdx - 1];
+    selectSection(activeSecIdx - 1, prevSec.concepts.length - 1);
+  } else if (delta > 0 && activeSecIdx === explorerSections.length - 1) {
+    switchToGameTab();
+  }
+}
+
+function practiceCurrentSection() {
+  const secNum = explorerSections[activeSecIdx].num;
+  let targetLvl = 0;
+  if (secNum === 3) targetLvl = 0;
+  else if (secNum === 4) targetLvl = 1;
+  else if (secNum === 5) targetLvl = 2;
+  else if (secNum === 6) targetLvl = 3;
+  else if (secNum === 7) targetLvl = 4;
+  else if (secNum === 8) targetLvl = 5;
+  else if (secNum === 9) targetLvl = 6;
+  else if (secNum === 10 || secNum === 11) targetLvl = 7;
+  else if (secNum >= 12 && secNum <= 15) targetLvl = 8;
+  else targetLvl = 9; // Sec 16, 17, 18
+
+  switchToGameTab();
+  startLevel(targetLvl);
+}
+
+/* ====================================================
+   PHASE 2: 10-LEVEL PRACTICE CHALLENGE GAME (ZERO MCQS)
+   ==================================================== */
+const GAME_LEVELS = [
+  // ── Level 1: Section 3 (Facts, Entities, Events, Status) ──
+  {
+    badge: "Level 1",
+    heading: "Section 3: The Building Blocks",
+    instruction: "Tap the exact keyword in the sentence that defines its KRR role!",
+    questions: [
+      {
+        tokens: ["Ali", "applied to", "the", "BS Computer Science", "program."],
+        target: "applied to",
+        concept: "Relationship (Links applicant to program)",
+        hint: "Look for the connection between the two entities."
+      },
+      {
+        tokens: ["Application 2026-104", "is an", "application", "record."],
+        target: "is an",
+        concept: "Entity Declaration",
+        hint: "Identifies the item as an identifiable entity."
+      },
+      {
+        tokens: ["Ali's", "application", "is", "incomplete."],
+        target: "is",
+        concept: "Property / Attribute",
+        hint: "Declares a characteristic of the entity."
+      },
+      {
+        tokens: ["An application record", "exists", "for Ali."],
+        target: "exists",
+        concept: "Existence",
+        hint: "Confirms whether the record is available."
+      },
+      {
+        tokens: ["Ali's application", "is", "pending", "document review."],
+        target: "pending",
+        concept: "State / Status",
+        hint: "Tracks the current condition in the workflow."
+      },
+      {
+        tokens: ["The officer", "reviews", "the submitted certificate."],
+        target: "reviews",
+        concept: "Action performed by an agent",
+        hint: "The operation performed by the actor."
+      },
+      {
+        tokens: ["The payment", "happened", "on 10 October."],
+        target: "happened",
+        concept: "Event occurring at a specific time",
+        hint: "Signals an event that occurred."
+      },
+      {
+        tokens: ["Processing", "costs", "500", "rupees."],
+        target: "costs",
+        concept: "Quantity / Measurable Amount",
+        hint: "A measurable numeric amount or fee."
+      }
+    ]
+  },
+
+  // ── Level 2: Section 4 (Logical Connectives) ──
+  {
+    badge: "Level 2",
+    heading: "Section 4: Logic Connectives Circuit",
+    instruction: "Connect the natural language sentence to its exact logic gate!",
+    questions: [
+      {
+        text: "The applicant submitted neither the certificate nor an approved alternative.",
+        options: ["Joint Negation (NOR)", "Disjunction (OR)", "Biconditional (IFF)", "Exclusive (XOR)"],
+        answer: "Joint Negation (NOR)",
+        hint: "'Neither…nor' denies both statements together."
+      },
+      {
+        text: "Select either morning or evening assessment, but not both.",
+        options: ["Joint Negation (NOR)", "Disjunction (OR)", "Biconditional (IFF)", "Exclusive (XOR)"],
+        answer: "Exclusive (XOR)",
+        hint: "'Either…or but not both' permits strictly one option."
+      },
+      {
+        text: "An application is complete if and only if all requirements are satisfied.",
+        options: ["Joint Negation (NOR)", "Disjunction (OR)", "Biconditional (IFF)", "Exclusive (XOR)"],
+        answer: "Biconditional (IFF)",
+        hint: "'If and only if' holds in both directions simultaneously."
+      },
+      {
+        text: "The applicant may submit a transcript or an equivalence certificate.",
+        options: ["Joint Negation (NOR)", "Disjunction (OR)", "Biconditional (IFF)", "Exclusive (XOR)"],
+        answer: "Disjunction (OR)",
+        hint: "Presents alternatives where one or both may be valid."
+      },
+      {
+        text: "The applicant cannot accept two mutually exclusive offers simultaneously.",
+        options: ["Exclusion of Combination (NAND)", "Disjunction (OR)", "Negation (NOT)", "Biconditional (IFF)"],
+        answer: "Exclusion of Combination (NAND)",
+        hint: "'Cannot have both' means at least one must not hold."
+      },
+      {
+        text: "Both the score requirement and document requirement must be met.",
+        options: ["Conjunction (AND)", "Disjunction (OR)", "Conditional (IF)", "Exclusive (XOR)"],
+        answer: "Conjunction (AND)",
+        hint: "'Both…and' requires every listed condition."
+      },
+      {
+        text: "Ali has not submitted the required certificate.",
+        options: ["Negation (NOT)", "Conditional (IF)", "Joint Negation (NOR)", "Biconditional (IFF)"],
+        answer: "Negation (NOT)",
+        hint: "'Not' explicitly denies the statement."
+      },
+      {
+        text: "Whenever a payment is confirmed, the official receipt is generated.",
+        options: ["Conditional (IF)", "Biconditional (IFF)", "Conjunction (AND)", "Exclusive (XOR)"],
+        answer: "Conditional (IF)",
+        hint: "'Whenever' expresses a condition triggering an outcome."
+      }
+    ]
+  },
+
+  // ── Level 3: Section 5 (Conditions & Requirements) ──
+  {
+    badge: "Level 3",
+    heading: "Section 5: Condition Architect",
+    instruction: "Identify the condition type governing each university policy!",
+    questions: [
+      {
+        text: "Registration proceeds only if the fee is paid.",
+        options: ["Necessary Condition", "Sufficient Condition", "Exception", "Prerequisite"],
+        answer: "Necessary Condition",
+        hint: "'Only if' indicates a mandatory prerequisite that must hold."
+      },
+      {
+        text: "Meeting all published eligibility criteria is sufficient to pass the eligibility check.",
+        options: ["Necessary Condition", "Sufficient Condition", "Exception", "Prerequisite"],
+        answer: "Sufficient Condition",
+        hint: "'Is sufficient' guarantees the outcome."
+      },
+      {
+        text: "Unless the fee is paid by the deadline, the application may be cancelled.",
+        options: ["Necessary Condition", "Sufficient Condition", "Exception", "Prerequisite"],
+        answer: "Exception",
+        hint: "'Unless' introduces the exception preventing cancellation."
+      },
+      {
+        text: "Submit the missing document; otherwise, the record remains pending.",
+        options: ["Alternative Outcome", "Sufficient Condition", "Prerequisite", "Dependency"],
+        answer: "Alternative Outcome",
+        hint: "'Otherwise' describes the fallback outcome."
+      },
+      {
+        text: "The application must be submitted before document verification begins.",
+        options: ["Prerequisite", "Dependency", "Exception", "Sufficient Condition"],
+        answer: "Prerequisite",
+        hint: "'Before' enforces workflow order."
+      },
+      {
+        text: "Final admission depends on meeting all applicable eligibility requirements.",
+        options: ["Dependency", "Sufficient Condition", "Exception", "Prerequisite"],
+        answer: "Dependency",
+        hint: "'Depends on' keeps outcome pending resolution of another decision."
+      }
+    ]
+  },
+
+  // ── Level 4: Section 6 (Quantifiers & Quantities) ──
+  {
+    badge: "Level 4",
+    heading: "Section 6: Quantifiers & Numbers",
+    instruction: "Classify the exact quantification scope in each statement!",
+    questions: [
+      {
+        text: "All applicants must provide valid identification.",
+        options: ["Universal (All)", "Existential (Some)", "No-existence (None)", "Minimum Threshold"],
+        answer: "Universal (All)",
+        hint: "'All' applies to every member without exception."
+      },
+      {
+        text: "At least one applicant has incomplete documents.",
+        options: ["Universal (All)", "Existential (Some)", "No-existence (None)", "Exact Quantity"],
+        answer: "Existential (Some)",
+        hint: "'At least one' indicates existential quantification."
+      },
+      {
+        text: "None of the applicants has completed verification yet.",
+        options: ["Universal (All)", "Existential (Some)", "No-existence (None)", "Proportion"],
+        answer: "No-existence (None)",
+        hint: "'None' specifies that zero members have the property."
+      },
+      {
+        text: "Applicants must submit no fewer than two supporting documents.",
+        options: ["Minimum Quantity", "Maximum Quantity", "Exact Quantity", "Majority"],
+        answer: "Minimum Quantity",
+        hint: "'No fewer than' sets a minimum lower bound."
+      },
+      {
+        text: "An applicant may select at most two preferred programs.",
+        options: ["Minimum Quantity", "Maximum Quantity", "Exact Quantity", "Minority"],
+        answer: "Maximum Quantity",
+        hint: "'At most' sets an upper bound cap."
+      },
+      {
+        text: "The applicant must upload precisely three specified forms.",
+        options: ["Minimum Quantity", "Maximum Quantity", "Exact Quantity", "Majority"],
+        answer: "Exact Quantity",
+        hint: "'Precisely' demands an exact equality count."
+      },
+      {
+        text: "The majority of applicants completed verification on time.",
+        options: ["Majority (> 50%)", "Minority", "Universal", "Existential"],
+        answer: "Majority (> 50%)",
+        hint: "'Majority' implies strictly more than half."
+      },
+      {
+        text: "Eighty percent of applications have been verified.",
+        options: ["Proportion", "Majority", "Universal", "Minimum Quantity"],
+        answer: "Proportion",
+        hint: "Describes a numerical fraction or percentage of the group."
+      }
+    ]
+  },
+
+  // ── Level 5: Section 7 (Comparisons & Rankings) ──
+  {
+    badge: "Level 5",
+    heading: "Section 7: Comparisons & Rankings",
+    instruction: "Identify the comparison or ordering relation expressed!",
+    questions: [
+      {
+        text: "Ali's test score is higher than Ahmed's.",
+        options: ["Greater Value", "Lower Value", "Equality", "Ranking"],
+        answer: "Greater Value",
+        hint: "'Higher than' indicates strict inequality."
+      },
+      {
+        text: "Ahmed's score is below the required threshold.",
+        options: ["Greater Value", "Lower Value", "Equality", "Preference"],
+        answer: "Lower Value",
+        hint: "'Below' benchmarks against a required threshold."
+      },
+      {
+        text: "The recorded score matches the verified test result.",
+        options: ["Equality", "Inequality", "Greater Value", "Preference"],
+        answer: "Equality",
+        hint: "'Matches' asserts that two stored values correspond."
+      },
+      {
+        text: "The certificate name does not match the application record.",
+        options: ["Inequality", "Equality", "Ranking", "Order"],
+        answer: "Inequality",
+        hint: "'Does not match' flags a mismatch between records."
+      },
+      {
+        text: "Ali ranked first among all candidates.",
+        options: ["Ranking", "Preference", "Equality", "Lower Value"],
+        answer: "Ranking",
+        hint: "'First' establishes an ordered position."
+      },
+      {
+        text: "Ali prefers BS Computer Science rather than BS Artificial Intelligence.",
+        options: ["Preference", "Ranking", "Equality", "Order"],
+        answer: "Preference",
+        hint: "'Prefers… rather than' records a favored alternative."
+      },
+      {
+        text: "Document verification occurs after application submission.",
+        options: ["Order (Temporal)", "Preference", "Ranking", "Equality"],
+        answer: "Order (Temporal)",
+        hint: "'After' expresses relative procedural order."
+      }
+    ]
+  },
+
+  // ── Level 6: Section 8 (Temporal & Sequence) ──
+  {
+    badge: "Level 6",
+    heading: "Section 8: Chrono-Timeline",
+    instruction: "Determine the temporal expression governing each step!",
+    questions: [
+      {
+        text: "The fee must be paid before the deadline.",
+        options: ["Deadline / Before", "Duration", "Recurrence", "Immediate Sequence"],
+        answer: "Deadline / Before",
+        hint: "'Before' sets a strict deadline limit."
+      },
+      {
+        text: "The merit list is published after evaluation.",
+        options: ["After", "Simultaneous", "Duration", "Recurrence"],
+        answer: "After",
+        hint: "'After' places an event later than another."
+      },
+      {
+        text: "The officer checked documents while reviewing the application.",
+        options: ["Simultaneous Activity", "Immediate Sequence", "Duration", "Deadline"],
+        answer: "Simultaneous Activity",
+        hint: "'While' indicates concurrent tasks."
+      },
+      {
+        text: "First check the score; then verify the documents.",
+        options: ["Sequence", "Duration", "Recurrence", "Simultaneous Activity"],
+        answer: "Sequence",
+        hint: "'First… then' converts ordered procedural steps."
+      },
+      {
+        text: "The application remained pending for five days.",
+        options: ["Duration", "Sequence", "Recurrence", "Time Point"],
+        answer: "Duration",
+        hint: "'For five days' quantifies elapsed persistence."
+      },
+      {
+        text: "The application period ends on 30 October.",
+        options: ["Start or End", "Duration", "Recurrence", "Immediate Sequence"],
+        answer: "Start or End",
+        hint: "'Ends on' specifies boundary validity."
+      },
+      {
+        text: "The application remains pending until verification is completed.",
+        options: ["Until (Terminating condition)", "Immediate Sequence", "Recurrence", "Duration"],
+        answer: "Until (Terminating condition)",
+        hint: "'Until' maintains a state up to a triggering event."
+      },
+      {
+        text: "As soon as payment is confirmed, the receipt is issued.",
+        options: ["Immediate Sequence", "Recurrence", "Duration", "Until"],
+        answer: "Immediate Sequence",
+        hint: "'As soon as' signals an immediate reaction."
+      }
+    ]
+  },
+
+  // ── Level 7: Section 9 (Causal & Evidential) ──
+  {
+    badge: "Level 7",
+    heading: "Section 9: Causal & Evidence Web",
+    instruction: "Distinguish causes, explanations, evidence, and conclusions!",
+    questions: [
+      {
+        text: "A server outage causes a delay in application submission.",
+        options: ["Cause", "Evidence", "Conclusion", "Contrast"],
+        answer: "Cause",
+        hint: "'Causes' establishes a direct causal relation."
+      },
+      {
+        text: "The application was delayed because a required document was missing.",
+        options: ["Reason / Explanation", "Cause", "Prediction", "Contrast"],
+        answer: "Reason / Explanation",
+        hint: "'Because' introduces an explanatory reason."
+      },
+      {
+        text: "The payment receipt provides evidence that Ali paid the fee.",
+        options: ["Evidence", "Prediction", "Generalization", "Conclusion"],
+        answer: "Evidence",
+        hint: "'Evidence shows' supports a claim with an official source."
+      },
+      {
+        text: "The missing certificate suggests that the application may be incomplete.",
+        options: ["Tentative Inference", "Definite Cause", "Conclusion", "Supporting Premise"],
+        answer: "Tentative Inference",
+        hint: "'Suggests' draws a provisional inference."
+      },
+      {
+        text: "The applicant will probably complete verification tomorrow.",
+        options: ["Prediction (Forecast)", "Established Fact", "Evidence", "Conclusion"],
+        answer: "Prediction (Forecast)",
+        hint: "'Probably' provides an estimated forecast."
+      },
+      {
+        text: "Generally, verified payments are processed faster.",
+        options: ["Generalization", "Definite Cause", "Prediction", "Evidence"],
+        answer: "Generalization",
+        hint: "'Generally' describes a typical pattern, not an absolute rule."
+      },
+      {
+        text: "The fee is unpaid; hence, registration is incomplete.",
+        options: ["Conclusion", "Supporting Premise", "Evidence", "Contrast"],
+        answer: "Conclusion",
+        hint: "'Hence' / 'therefore' signals a derived conclusion."
+      },
+      {
+        text: "Although Ali meets the score threshold, his documents are incomplete.",
+        options: ["Contrast / Qualification", "Conclusion", "Causation", "Evidence"],
+        answer: "Contrast / Qualification",
+        hint: "'Although' preserves a qualification between two opposing claims."
+      }
+    ]
+  },
+
+  // ── Level 8: Sections 10 & 12 (Truth, Belief & Epistemic Status) ──
+  {
+    badge: "Level 8",
+    heading: "Sections 10 & 12: Truth & Epistemic Scanner",
+    instruction: "Stamp the precise epistemic status of incoming applicant records!",
+    questions: [
+      {
+        text: "The official payment record confirms that the fee was received.",
+        options: ["✅ Verified Fact", "⚠️ Reported Claim", "💭 Agent Belief", "❓ Missing Info"],
+        answer: "✅ Verified Fact",
+        hint: "Confirmed authoritative record."
+      },
+      {
+        text: "The applicant reports that the fee was paid yesterday.",
+        options: ["✅ Verified Fact", "⚠️ Reported Claim", "💭 Agent Belief", "❓ Missing Info"],
+        answer: "⚠️ Reported Claim",
+        hint: "Claim attributed to a speaker, not yet verified."
+      },
+      {
+        text: "The reviewer thinks that the scanned copy is readable.",
+        options: ["✅ Verified Fact", "⚠️ Reported Claim", "💭 Agent Belief", "❓ Missing Info"],
+        answer: "💭 Agent Belief",
+        hint: "'Thinks that' expresses belief/judgment."
+      },
+      {
+        text: "The officer has reason to suspect a mismatch in identity details.",
+        options: ["Reasoned Suspicion", "Verified Fact", "Definite Fraud", "Missing Info"],
+        answer: "Reasoned Suspicion",
+        hint: "Reasoned concern flagged for investigation."
+      },
+      {
+        text: "The applicant's payment status is not recorded in the system.",
+        options: ["❓ Missing Info", "Proven False", "Verified Fact", "Reported Claim"],
+        answer: "❓ Missing Info",
+        hint: "Missing data does NOT automatically mean not paid."
+      },
+      {
+        text: "The date on the certificate contradicts the application date.",
+        options: ["Conflicting Information", "Verified Fact", "Belief", "Prediction"],
+        answer: "Conflicting Information",
+        hint: "Incompatible data requiring reconciliation."
+      },
+      {
+        text: "Assuming the test score is correct, the applicant meets the threshold.",
+        options: ["Assumption (Temporary premise)", "Verified Fact", "Reported Claim", "Conclusion"],
+        answer: "Assumption (Temporary premise)",
+        hint: "Temporary premise for reasoning, not a verified fact."
+      },
+      {
+        text: "The verified score and published threshold imply eligibility.",
+        options: ["Derived Knowledge", "Belief", "Suspicion", "Reported Claim"],
+        answer: "Derived Knowledge",
+        hint: "Information concluded logically from known premises."
+      }
+    ]
+  },
+
+  // ── Level 9: Sections 11, 13, 14, 15 (Rules, Deontics & What-Ifs) ──
+  {
+    badge: "Level 9",
+    heading: "Sections 11–15: Rules & Protocols",
+    instruction: "Classify deontic rules, hypothetical scenarios, and warnings!",
+    questions: [
+      {
+        text: "Applicants must not submit false information.",
+        options: ["Prohibition (Forbidden)", "Obligation", "Permission", "Recommendation"],
+        answer: "Prohibition (Forbidden)",
+        hint: "'Must not' expresses a strict prohibition."
+      },
+      {
+        text: "An eligible applicant may apply for an available program.",
+        options: ["Permission (Allowed)", "Obligation (Must)", "Prohibition", "Recommendation"],
+        answer: "Permission (Allowed)",
+        hint: "'May' expresses authorization."
+      },
+      {
+        text: "Applicants should check their application status regularly.",
+        options: ["Recommendation (Advice)", "Obligation (Must)", "Prohibition", "Permission"],
+        answer: "Recommendation (Advice)",
+        hint: "'Should' expresses advice, not a mandatory rule."
+      },
+      {
+        text: "Suppose the applicant submits the missing certificate tomorrow.",
+        options: ["Hypothetical Situation", "Counterfactual", "Verified Event", "Obligation"],
+        answer: "Hypothetical Situation",
+        hint: "'Suppose' imagines a future possibility."
+      },
+      {
+        text: "If the applicant had submitted earlier, verification would have finished sooner.",
+        options: ["Counterfactual Situation", "Hypothetical Situation", "Fact", "Rule"],
+        answer: "Counterfactual Situation",
+        hint: "'If… had' reasons about an unrealized past alternative."
+      },
+      {
+        text: "The applicant uploads the certificate so that the office can verify it.",
+        options: ["Goal or Purpose", "Counterfactual", "Hypothetical", "Obligation"],
+        answer: "Goal or Purpose",
+        hint: "'So that' states the intended objective."
+      },
+      {
+        text: "Ensure that payment is confirmed before marking the fee as paid.",
+        options: ["Warning / Precaution", "Command", "Information Query", "Hypothetical"],
+        answer: "Warning / Precaution",
+        hint: "'Ensure that' highlights a safeguard against errors."
+      },
+      {
+        text: "According to the official record, the fee has been received.",
+        options: ["Source Attribution", "Similarity", "Correction", "Limitation"],
+        answer: "Source Attribution",
+        hint: "'According to' attaches provenance to the claim."
+      }
+    ]
+  },
+
+  // ── Level 10: Section 16 (The 20 Benchmark Cases) ──
+  {
+    badge: "Level 10",
+    heading: "Section 16: Grand Benchmark Challenge",
+    instruction: "Classify all official benchmark test cases from Section 16 of the PDF!",
+    questions: [
+      {
+        text: "Ali submitted the application and paid the fee.",
+        options: ["Conjunction", "Disjunction", "Negation", "Conditional"],
+        answer: "Conjunction",
+        hint: "Case 1: Both statements joined by 'and'."
+      },
+      {
+        text: "Every applicant must provide valid identification.",
+        options: ["Universal quantity and obligation", "Existential quantity", "Hypothetical", "Reported claim"],
+        answer: "Universal quantity and obligation",
+        hint: "Case 3: 'Every' (universal) + 'must' (obligation)."
+      },
+      {
+        text: "Some applicants have incomplete documents.",
+        options: ["Existential quantity", "Universal quantity", "No-existence", "Exact quantity"],
+        answer: "Existential quantity",
+        hint: "Case 4: 'Some' means at least one."
+      },
+      {
+        text: "The application may proceed only if all required documents are complete.",
+        options: ["Necessary condition", "Sufficient condition", "Exception", "Prerequisite"],
+        answer: "Necessary condition",
+        hint: "Case 5: 'Only if' denotes a necessary prerequisite."
+      },
+      {
+        text: "Unless the fee is paid by the deadline, the application may be cancelled.",
+        options: ["Conditional exception", "Necessary condition", "Joint negation", "Universal rule"],
+        answer: "Conditional exception",
+        hint: "Case 6: 'Unless' introduces an exception."
+      },
+      {
+        text: "The application was delayed because a required document was missing.",
+        options: ["Explanation or causal claim", "Evidence", "Conclusion", "Contrast"],
+        answer: "Explanation or causal claim",
+        hint: "Case 7: 'Because' signals a causal explanation."
+      },
+      {
+        text: "Ahmed's score is below the required threshold.",
+        options: ["Comparison", "Equality", "Preference", "Ranking"],
+        answer: "Comparison",
+        hint: "Case 9: 'Below' compares values against benchmark."
+      },
+      {
+        text: "The documents must be verified before the merit list is published.",
+        options: ["Obligation and temporal order", "Disjunction", "Prediction", "Counterfactual"],
+        answer: "Obligation and temporal order",
+        hint: "Case 10: 'Must' (obligation) + 'before' (temporal order)."
+      },
+      {
+        text: "The applicant will probably complete verification tomorrow.",
+        options: ["Prediction and uncertainty", "Established fact", "Obligation", "Command"],
+        answer: "Prediction and uncertainty",
+        hint: "Case 11: 'Probably' expresses predictive likelihood."
+      },
+      {
+        text: "The system cannot determine whether the certificate is authentic.",
+        options: ["Missing knowledge", "Negation", "Confirmed fraud", "Verified fact"],
+        answer: "Missing knowledge",
+        hint: "Case 12: Epistemic gap where truth cannot be established."
+      },
+      {
+        text: "Neither the certificate nor an approved alternative was submitted.",
+        options: ["Joint negation", "Disjunction", "Biconditional", "Exclusive alternative"],
+        answer: "Joint negation",
+        hint: "Case 13: 'Neither…nor' denies both alternatives."
+      },
+      {
+        text: "Ali meets the score requirement; however, his documents are incomplete.",
+        options: ["Contrast", "Conjunction", "Conclusion", "Causation"],
+        answer: "Contrast",
+        hint: "Case 14: 'However' preserves qualification."
+      },
+      {
+        text: "If the applicant had submitted the documents earlier, verification might have finished sooner.",
+        options: ["Counterfactual", "Hypothetical", "Fact", "Command"],
+        answer: "Counterfactual",
+        hint: "Case 15: Unrealized past alternative."
+      },
+      {
+        text: "Please check whether Ali's application has been verified.",
+        options: ["Request and information query", "Command", "Factual statement", "Warning"],
+        answer: "Request and information query",
+        hint: "Case 16: Courteous information retrieval request."
+      },
+      {
+        text: "An applicant may select at most two preferred programs.",
+        options: ["Maximum quantity", "Minimum quantity", "Universal", "Exact quantity"],
+        answer: "Maximum quantity",
+        hint: "Case 17: 'At most' sets an upper cap."
+      },
+      {
+        text: "The applicant reports that the fee was paid, but no payment record is available.",
+        options: ["Reported claim and missing evidence", "Verified fact", "Proven fraud", "Prediction"],
+        answer: "Reported claim and missing evidence",
+        hint: "Case 20: Speaker report vs missing system evidence."
+      }
+    ]
+  }
+];
+
+let currentLvlIdx = 0;
+let currentQIdx = 0;
+let score = 0;
+let levelMistakes = 0;
+let comboStreak = 0;
+let currentLevelData = null;
+
+
+function updateStreakUI() {
+  const badge = document.getElementById('streakBadge');
+  if (!badge) return;
+  if (comboStreak > 1) {
+    badge.textContent = `🔥 ${comboStreak}x Streak! (+ ${comboStreak * 5} bonus)`;
+    badge.classList.remove('hidden');
+  } else {
+    badge.classList.add('hidden');
+  }
+}
+
+function updateScore(delta) {
+  score += delta;
+  document.getElementById('scoreVal').textContent = score;
+}
+
+function initGame() {
+  const quickBar = document.getElementById('levelQuickBar');
+  quickBar.innerHTML = '';
+
+  GAME_LEVELS.forEach((lvl, idx) => {
+    const chip = document.createElement('button');
+    chip.className = 'lvl-chip-btn' + (idx === 0 ? ' active' : '');
+    chip.textContent = lvl.badge;
+    chip.addEventListener('click', () => {
+      sfx.click();
+      startLevel(idx);
+    });
+    quickBar.appendChild(chip);
+  });
+
+  startLevel(0);
+}
+
+function startLevel(lvlIdx) {
+  currentLvlIdx = lvlIdx;
+  currentQIdx = 0;
+  levelMistakes = 0;
+  comboStreak = 0;
+  updateStreakUI();
+  currentLevelData = GAME_LEVELS[lvlIdx];
+
+  document.querySelectorAll('.lvl-chip-btn').forEach((chip, i) => {
+    chip.classList.toggle('active', i === lvlIdx);
+  });
+
+  document.getElementById('lvlBadge').textContent = currentLevelData.badge;
+  document.getElementById('lvlTitle').textContent = currentLevelData.heading;
+  document.getElementById('gameHeaderDesc').textContent = currentLevelData.instruction;
+
+  renderQuestion();
+}
+
+function updateProgressBar() {
+  const total = currentLevelData.questions.length;
+  const pct = (currentQIdx / total) * 100;
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressRatio').textContent = `${currentQIdx + 1} / ${total}`;
+}
+
+function renderQuestion() {
+  updateProgressBar();
+  const q = currentLevelData.questions[currentQIdx];
+  const stage = document.getElementById('gameStage');
+  const feedback = document.getElementById('liveFeedback');
+  
+  feedback.textContent = '';
+  feedback.className = 'live-feedback';
+
+  // MECHANIC 1: Word Token Tap (Level 1)
+  if (q.tokens) {
+    stage.innerHTML = `
+      <div class="sentence-token-stream">
+        ${q.tokens.map(token => `<button class="word-token" data-token="${token}">${token}</button>`).join(' ')}
+      </div>
+      <div id="tokenConceptReveal" style="font-weight:700;color:#38bdf8;min-height:24px;"></div>
+    `;
+    stage.querySelectorAll('.word-token').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const selected = btn.dataset.token;
+        if (selected === q.target) {
+          sfx.correct();
+          btn.classList.add('selected-correct');
+          stage.querySelectorAll('.word-token').forEach(b => { if(b !== btn) b.style.opacity = '0.35'; });
+          document.getElementById('tokenConceptReveal').textContent = `🎯 Correct! Category: ${q.concept}`;
+          feedback.textContent = "✨ Great spot! Next question loading...";
+          feedback.className = "live-feedback success";
+          comboStreak++;
+          const streakBonus = comboStreak > 1 ? (comboStreak * 5) : 0;
+          updateScore(20 + streakBonus);
+          updateStreakUI();
+          setTimeout(() => advanceQuestion(), 1100);
+        } else {
+          sfx.wrong();
+          levelMistakes++;
+          comboStreak = 0;
+          updateStreakUI();
+          btn.classList.add('shake-wrong');
+          setTimeout(() => btn.classList.remove('shake-wrong'), 500);
+          feedback.textContent = "❌ That's not the cue keyword. Try another!";
+          feedback.className = "live-feedback error";
+        }
+      });
+    });
+  } 
+  // MECHANIC 2: Options / Stamp (Levels 2 - 10)
+  else {
+    stage.innerHTML = `
+      <div class="claim-card-inspect">
+        <div class="claim-quote">"${q.text}"</div>
+      </div>
+      <div class="stamp-actions-grid">
+        ${q.options.map(opt => `<button class="stamp-btn" data-opt="${opt}">${opt}</button>`).join('')}
+      </div>
+    `;
+    stage.querySelectorAll('.stamp-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const choice = btn.dataset.opt;
+        if (choice === q.answer) {
+          sfx.correct();
+          btn.style.background = "#059669";
+          btn.style.borderColor = "#10b981";
+          feedback.textContent = "✅ Correct KRR Classification!";
+          feedback.className = "live-feedback success";
+          updateScore(20);
+          setTimeout(() => advanceQuestion(), 850);
+        } else {
+          sfx.wrong();
+          levelMistakes++;
+          btn.style.background = "rgba(239,68,68,0.2)";
+          btn.style.borderColor = "#ef4444";
+          feedback.textContent = "❌ Incorrect choice. Check the hint!";
+          feedback.className = "live-feedback error";
+        }
+      });
+    });
+  }
+}
+
+function advanceQuestion() {
+  currentQIdx++;
+  if (currentQIdx < currentLevelData.questions.length) {
+    renderQuestion();
+  } else {
+    celebrateLevel();
+  }
+}
+
+function celebrateLevel() {
+  sfx.fanfare();
+  const modal = document.getElementById('celebrationModal');
+  const pts = currentLevelData.questions.length * 20;
+  document.getElementById('celebTitle').textContent = `${currentLevelData.heading} Complete!`;
+  document.getElementById('celebScoreText').textContent = `+${pts} Points`;
+  document.getElementById('celebPts').textContent = pts;
+  document.getElementById('celebAcc').textContent = levelMistakes === 0 ? '100%' : '85%';
+  
+  modal.classList.remove('hidden');
+}
+
+/* ====================================================
+   APP ROUTING & EVENT LISTENERS
+   ==================================================== */
+function switchToLearnTab() {
+  document.getElementById('tabLearnBtn').classList.add('active');
+  document.getElementById('tabGameBtn').classList.remove('active');
+  document.getElementById('learnView').classList.add('active');
+  document.getElementById('gameView').classList.remove('active');
+  sfx.click();
+}
+
+function switchToGameTab() {
+  document.getElementById('tabGameBtn').classList.add('active');
+  document.getElementById('tabLearnBtn').classList.remove('active');
+  document.getElementById('gameView').classList.add('active');
+  document.getElementById('learnView').classList.remove('active');
+  sfx.click();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Tabs
+  document.getElementById('tabLearnBtn').addEventListener('click', switchToLearnTab);
+  document.getElementById('tabGameBtn').addEventListener('click', switchToGameTab);
+  document.getElementById('brandBtn').addEventListener('click', switchToLearnTab);
+
+  // Hint button
+  document.getElementById('hintBtn').addEventListener('click', () => {
+    sfx.click();
+    const q = currentLevelData.questions[currentQIdx];
+    const fb = document.getElementById('liveFeedback');
+    fb.textContent = `💡 Hint: ${q.hint}`;
+    fb.className = "live-feedback hint";
+  });
+
+  // Review lesson button in game
+  document.getElementById('reviewLessonBtn').addEventListener('click', () => {
+    switchToLearnTab();
+    const lvlToSecMap = [0, 1, 2, 3, 4, 5, 6, 7, 9, 13];
+    const secTarget = lvlToSecMap[currentLvlIdx] !== undefined ? lvlToSecMap[currentLvlIdx] : 0;
+    selectSection(secTarget, 0);
+  });
+
+  // Next level action in modal
+  document.getElementById('nextLevelActionBtn').addEventListener('click', () => {
+    sfx.click();
+    document.getElementById('celebrationModal').classList.add('hidden');
+    if (currentLvlIdx < GAME_LEVELS.length - 1) {
+      startLevel(currentLvlIdx + 1);
+    } else {
+      alert("🎉 Grand Congratulations! You've mastered all 10 Levels of KRR Quest!");
+      startLevel(0);
+    }
+  });
+
+  // Sound toggle
+  const soundBtn = document.getElementById('soundToggleBtn');
+  soundBtn.addEventListener('click', () => {
+    sfx.enabled = !sfx.enabled;
+    soundBtn.textContent = sfx.enabled ? '🔊' : '🔇';
+  });
+
+  // Initialize both engines
+  initFontSizeController();
+  initTableExplorer();
+  initGame();
+});
+
+</script>
+</body>
+</html>
